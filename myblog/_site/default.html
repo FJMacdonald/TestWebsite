@@ -98,8 +98,8 @@ By following these steps, you can create a free website that allows users to upl
  
                  result.push(obj);
              }
-             console.log("csv file contents");
-             console.log(result);
+            //  console.log("csv file contents");
+            //  console.log(result);
          }
  
  
@@ -196,9 +196,9 @@ By following these steps, you can create a free website that allows users to upl
  
              // Function to reset the chart
              function resetChart() {
- 
+                console.log("reset chart");
                  // Reset the y-axis scale to its original domain
-                 yScale.domain(d3.extent(yValues));
+              //   yScale.domain([-max_time_lag, 0]);
  
                  // Update the y-axis
                  svg.select(".y.axis").call(yAxis);
@@ -217,52 +217,77 @@ By following these steps, you can create a free website that allows users to upl
              const duration = 300; //To calibrate all races to proportions of swim=10, t=2, bike=30, run=20
              const raceLength = 70;
 
-             var max_time_lag = 10*360; // 10mins
- 
-             resultsData.forEach(athlete => {
-                 console.log(athlete);
+            
+
+             const athletesArray = [];
+             const leaderSwim = convertToSeconds(resultsData[0].Swim);
+             const leaderT1 = leaderSwim + convertToSeconds(resultsData[0].T1);
+             const leaderBike = leaderSwim + leaderT1 + convertToSeconds(resultsData[0].Bike);
+             const leaderT2 = leaderSwim + leaderT1 + leaderBike + convertToSeconds(resultsData[0].T2);
+             const leaderRun = leaderSwim + leaderT1 + leaderBike +leaderT2 + convertToSeconds(resultsData[0].Run);
+             
+             //console.log(leaderSwim, leaderT1, leaderBike, leaderT2, leaderRun);
+             var max_time_lag = leaderRun; 
+
+             resultsData.forEach(athlete => {  
                  // extract the first name
                  const firstName = athlete["Athlete First Name"];
                  const lastName = athlete["Athlete Last Name"];
-                 const swim = convertToSeconds(athlete["Bike"]);
-                 const t1 = convertToSeconds(athlete["T1"]);
-                 const bike = convertToSeconds(athlete["Bike"]);
-                 const t2 = convertToSeconds(athlete["T2"]);
-                 const run = convertToSeconds(athlete["Run"]);
-                 const position = athlete["Position"];
-                 const totalTime = athlete["Total Time"];
-                 const status = athlete["Status"]
-                 //console.log(firstName + " " + lastName );
-                 const athleteName = firstName + " " + lastName;
-                 const values = [swim, t1, bike, t2, run];
-                 // Using reduce() to sum the values of the array
-                 const sumTime = values.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
- 
- 
+                 const swim = convertToSeconds(athlete["Swim"]);
+                 const t1 = swim + convertToSeconds(athlete["T1"]);
+                 const bike = swim + t1 + convertToSeconds(athlete["Bike"]);
+                 const t2 = swim + t1 + bike + convertToSeconds(athlete["T2"]);
+                 const run = swim + t1 + bike + t2 + convertToSeconds(athlete["Run"]);
+                 console.log(firstName + " " + lastName);
+                //  console.log(swim, t1, bike, t2, run);
+                //  console.log(leaderSwim - swim, leaderT1 - t1, leaderBike - bike, leaderT2 - t2, leaderRun - run);
+
                  //Find the slowest race time:
- 
-                 if (sumTime < max_time_lag) {
-                     max_time_lag = sumTime;
+                 if ((status == "") && (run > max_time_lag)) {
+                     max_time_lag = leaderRun - run;
                  }
+                 console.log("time lag: ", max_time_lag, leaderRun, run);
+                 
+                 athletesArray.push({
+                    firstName: firstName,
+                    lastName: lastName,
+                    athleteName: firstName + " " + lastName,
+                    position: athlete["Position"],
+                    status: athlete["Status"],
+                    values: [{"x":0, "y":0, "diff": convertToMinutes(0)}, 
+                    {"x":10, "y":leaderSwim - swim, "diff":  convertToMinutes(swim - leaderSwim)},
+                    {"x":12, "y":leaderT1 - t1, "diff":  convertToMinutes(t1 - leaderT1)},
+                    {"x":42, "y":leaderBike - bike, "diff":  convertToMinutes(bike - leaderBike)},
+                    {"x":44, "y":leaderT2 - t2, "diff":  convertToMinutes(t2 - leaderT2)},
+                    {"x":64, "y":leaderRun - run, "diff":  convertToMinutes(run - leaderRun)},
+                    ]
+                });
              })
- 
+             console.log("max time lag: ", max_time_lag);
+             //This function takes an input time String formated as hr:min:sec and returns 
+             //the number of seconds
              function convertToSeconds(timeString) {
- 
                  // Split the time string into hours, minutes, and seconds
                  const [hours, minutes, seconds] = timeString.split(':').map(Number);
- 
                  // Convert hours, minutes, and seconds to seconds
                  const totalSeconds = hours * 3600 + minutes * 60 + seconds;
- 
                  return totalSeconds;
              }
- 
+             //This function takes an input time in seconds, calculates the minutes and remaining 
+             //seconds, and formats them as "minutes:seconds". It also ensures that single-digit 
+             //seconds are padded with a leading zero.
+             function convertToMinutes(timeInSeconds) {
+                const minutes = Math.floor(timeInSeconds / 60);
+                const seconds = Math.floor(timeInSeconds % 60);
+                const formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+                return formattedTime;
+             }
              
              // Define the size and spacing of the rectangles
              const size = 25;
  
              //rectangles in the legend (athletes + teams)
-             nRects = resultsData.length
+             nRects = athletesArray.length
              const clientWidth = d3.select("#chart").node().getBoundingClientRect().width;
              const nColumns = Math.trunc(clientWidth / 120);
              const bottom = Math.ceil(nRects / nColumns) * size * 1.2 + 70;
@@ -302,15 +327,15 @@ By following these steps, you can create a free website that allows users to upl
                  .range([0, width]); //leaving space for ledgend
  
              // Extract y-coordinates from data
-             const yValues = resultsData.flatMap(result => result.values.flat());//.map(point => point.y));
+            // const yValues = athletesArray.flatMap(athlete => athlete.values.flat());//.map(point => point.y));
  
              // Define the initial yScale
              const yScale = d3.scaleLinear()
-                 .domain(d3.extent(yValues))
+                 .domain([max_time_lag, 0])
                  .range([height, 0]);
  
              // Define the initial yAxis
-      //       const yAxis = d3.axisLeft(yScale).ticks(0);
+             const yAxis = d3.axisLeft(yScale).ticks(0);
  
              // Append the yAxis to the svg
              svg.append("g")
@@ -450,7 +475,7 @@ By following these steps, you can create a free website that allows users to upl
  
  
  
-             updateChart(initial_time_lag);
+             updateChart(10*360);
              updateYAxis();
  
  
@@ -463,7 +488,7 @@ By following these steps, you can create a free website that allows users to upl
  
  
                  const yScale = d3.scaleLinear()
-                     .domain(d3.extent(yValues))
+                     .domain(max_time_lag)
                      .range([height, 0]);
  
  
@@ -476,8 +501,8 @@ By following these steps, you can create a free website that allows users to upl
  
                  var legendIndex = 0;
  
-                 resultsData.forEach((athlete, athleteIndex) => {
-                         console.log(athlete);
+                 athletesArray.forEach((athlete, athleteIndex) => {
+                     console.log(athlete);
                      console.log(athleteIndex);
                      x = legendIndex % nColumns * (clientWidth / nColumns) - 20;
                      y = height + Math.floor(legendIndex / nColumns) * 30 + 50;
@@ -496,17 +521,17 @@ By following these steps, you can create a free website that allows users to upl
                          .attr("y", y)
                          .attr("width", size)
                          .attr("height", size)
-                         .attr("fill", team.colors[athleteIndex % team.colors.length]) // Assign colors based on athlete index within the team
+                         .attr("fill", colorPalette[athleteIndex]) // Assign colors based on athlete index within the team
                          .style('opacity', lineOpacity)
                          .style("stroke", "Black")
                          .style("stroke-width", lineStroke)
                          .on("click", function () {
                              indexCounter = 0
-                             for (let i = 0; i < teamData.length; i++) {
-                                 //for some reason team.team has quotation marks in it.  e.g. "Queens"
-                                 if (team.team.includes(teamData[i].team)) { break; }
-                                 indexCounter += teamData[i].athletes.length
-                             }
+                            //  for (let i = 0; i < teamData.length; i++) {
+                            //      //for some reason team.team has quotation marks in it.  e.g. "Queens"
+                            //      if (team.team.includes(teamData[i].team)) { break; }
+                            //      indexCounter += teamData[i].athletes.length
+                            //  }
  
                              // //Check if the rect is selected 
                              var athleteRect = d3.select(this);
@@ -552,36 +577,36 @@ By following these steps, you can create a free website that allows users to upl
                      athleteGroup.append("text")
                          .attr("x", x + 1.2 * size)
                          .attr("y", y + 0.4 * size)
-                         .attr("fill", team.colors[athleteIndex % team.colors.length])
-                         .text(function (d) {
-                             return athleteName.split(' ')[0];
-                         })
+                         .attr("fill", colorPalette[athleteIndex])
+                         .text(athlete.firstName)
+                        //      return d.firstName;//.split(' ')[0];
+                        //  })
                          .attr("text-anchor", "left")
                          .style("font-size", "12px")
                      //Add last name next to rect
                      athleteGroup.append("text")
                          .attr("x", x + 1.2 * size)
                          .attr("y", y + 0.9 * size)
-                         .attr("fill", team.colors[athleteIndex % team.colors.length])
-                         .text(function (d) {
-                             return athleteName.split(' ')[1];
-                         })
+                         .attr("fill", colorPalette[athleteIndex])
+                         .text(athlete.firstName)
                          .attr("text-anchor", "left")
                          .style("font-size", "12px")
  
                      //increment legendIndex
                      legendIndex += 1;
- 
+                     console.log("values");
+                     console.log(athlete.values);
                      //Draw chart items (path, circles, name text)
+                     console.log("path");
                      athleteGroup.append("path")
-                         .datum(team.values[athleteIndex])
+                         .datum(athlete.values)
                          .attr("class", "line")
                          .attr("fill", "none")
-                         .attr("stroke", team.colors[athleteIndex % team.colors.length])
+                         .attr("stroke", colorPalette[athleteIndex])
                          .attr("stroke-width", lineStroke)
                          .attr("d", d3.line()
-                             .x(d => xScale(d.x))
-                             .y(d => yScale(d.y)))
+                             .x(d => { console.log("x: ", d.x, xScale(d.x)); return xScale(d.x);})
+                             .y(d => { console.log("y: ", d.y, yScale(d.y)); return yScale(d.y);}))
                          .attr("fill", "none")
                          .style('opacity', lineOpacity)
                          .attr("clip-path", "url(#clip)")
@@ -589,7 +614,7 @@ By following these steps, you can create a free website that allows users to upl
                              const [mouseX, mouseY] = d3.pointer(event, this);
                              svg.append("text")
                                  .attr("class", "title-text")
-                                 .style("fill", team.colors[athleteIndex % team.colors.length])
+                                 .style("fill", colorPalette[athleteIndex])
                                  .text(athlete)
                                  .attr("text-anchor", "left")
                                  .attr("x", mouseX)
@@ -600,17 +625,17 @@ By following these steps, you can create a free website that allows users to upl
                              svg.select(".title-text").remove();
                          });
  
- 
+                         console.log("circle");
                      athleteGroup.selectAll(".circle")
-                         .data(team.values[athleteIndex])
+                         .data(athlete.values)
                          .enter()
                          .append("circle")
                          .attr("r", circleRadius)
                          .style('opacity', lineOpacity)
-                         .attr("fill", team.colors[athleteIndex % team.colors.length])
+                         .attr("fill", colorPalette[athleteIndex])
                          .attr("class", "athlete-circle")
                          .attr("athlete", athlete)
-                         .attr("team", team.team)
+                        // .attr("team", team.team)
                          .attr("cy", d => yScale(d.y))
                          .attr("cx", d => xScale(d.x))
                          .attr("clip-path", "url(#clip)")
@@ -636,23 +661,23 @@ By following these steps, you can create a free website that allows users to upl
                                  .selectAll(".text").remove();
                          });
  
-                     athleteGroup.selectAll(".text")
-                         .data([team.values[athleteIndex][5]])
-                         .enter()
-                         .append("text")
-                         .attr("class", "line-text")
-                         .text(team.athletes[athleteIndex])
-                         .attr("x", xScale(raceLength - 5))
-                         .attr("y", d => yScale(d.y))
-                         .attr("fill", team.colors[athleteIndex % team.colors.length])
-                         .text(function (d) { return athleteName.split(' ')[0] })
-                         .attr("text-anchor", "left")
-                         .style("font-size", "10px")
-                         .style("visibility", "hidden");
+                    //  athleteGroup.selectAll(".text")
+                    //      .data([team.values[athleteIndex][5]])
+                    //      .enter()
+                    //      .append("text")
+                    //      .attr("class", "line-text")
+                    //      .text(team.athletes[athleteIndex])
+                    //      .attr("x", xScale(raceLength - 5))
+                    //      .attr("y", d => yScale(d.y))
+                    //      .attr("fill", colorPalette[athleteIndex])
+                    //      .text(function (d) { return athleteName.split(' ')[0] })
+                    //      .attr("text-anchor", "left")
+                    //      .style("font-size", "10px")
+                    //      .style("visibility", "hidden");
  
                  });
  
- 
+                 console.log("clip");
                  // Define clipping path for lines
                  svg.append("defs").append("clipPath")
                      .attr("id", "clip")
