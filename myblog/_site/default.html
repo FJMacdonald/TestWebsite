@@ -260,32 +260,6 @@ By following these steps, you can create a free website that allows users to upl
                  "#c0c0c0", // Silver
              ];
  
-             // const blue = ["#01213f", "#02325f", "#034b8f", "#0465bf", "#057eef", "#2b96fa", "#5baefb", "#8bc5fc", "#bbddfd", "#d3e9fd"] //blue
-             // const blue2 = ["#022b3e", "#034362", "#056693", "#0787c4", "#09a9f5", "#3abbf7", "#6bcbf9", "#9cddfb", "#cdeefd", "#d3f0fd"]
-             // const blue3 = ["#004049", "#005a66", "#008799", "#00b4cc", "#00e1ff", "#33e7ff", "#66edff", "#99f3ff", "#ccf9fe", "#d2f9fe"]//tealish
-             // const green = ["#004128", "#00663e", "#00995d", "#00cc7d", "#00ff9c", "#33ffb0", "#66ffc3", "#99ffd7", "#ccfeeb", "#d2feed"]//Tones of Iceland Green 
-             // const green3 = ["#404900", "#5a6600", "#879900", "#b4cc00", "#e1ff00", "#e7ff33", "#edff66", "#f3ff99", "#f9fecc", "#fafeda"]//swamp green
-             // const brown = ["#492a00", "#663b00", "#995800", "#cc7600", "#ff9300", "#ffa933", "#ffbe66", "#ffd499", "#fee9cc", "#feecd2"]//beastial brown
-             // const pink = ["#42190e", "#66005d", "#99008c", "#cc00ba", "#ff00e9", "#ff33ed", "#ff66f2", "#ff99f6", "#feccfa", "#fed2fb"]//devine purple
-             // const brown2 = ["#35290b", "#534012", "#7d601b", "#a78024", "#d1a12d", "#dab357", "#e3c681", "#ecd9ab", "#f5ecd5", "#f6eeda"]//gold
-             // const red2 = ["#8e0b0b", "#a00c0c", "#b20e0e", "#d92f2f", "#f04d4d", "#f67373", "#f89696", "#fcb9b9", "#ffe1e1", "#efcece"] //red
-             // const purple = ["#340066", "#4e0099", "#6800cc", "#8300ff", "#9b33ff", "#b466ff", "#cd99ff", "#9279df", "#c1b3f8", "#e6ccfe"]
-             // const green2 = ["#0a6e23", "#128c31", "#1ba73f", "#26c34d", "#37d760", "#54e97a", "#7dfc9e", "#a7f9bd", "#c8f8d6", "#e4faea"] //greens
-             // const redbrown = ["#4c0000", "#671c04", "#802f0b", "#9a4221", "#b65537", "#d1694e", "#e8816b", "#f49b8a", "#fcb5aa", "#ffccd0"] //maroons
-             // const blue4 = ["#00a0a0", "#13b4b4", "#26c7c7", "#3adbdb", "#4deeee", "#61f7f7", "#8bfdfd", "#aafafa", "#c8fcfc", "#e7ffff"] //blue-green
-             // const grey = ["#333333", "#505050", "#666666", "#808080", "#999999", "#b3b3b3", "#cccccc", "#d9d9d9", "#e6e6e6", "#f2f2f2"] //greys
-             // const gold = ["#fdd835", "#ffeb3b", "#ffe57f", "#ffd740", "#ffcd3c", "#ffc107", "#ffca28", "#ffc400", "#ffc94a", "#fff350"] //yellow
-             // const grey2 = ["#30475e", "#475c76", "#596c86", "#6b7c95", "#7c8ca5", "#8d9cb4", "#9faebf", "#b0becd", "#c2cedc", "#d3dedb"] //blue-grey
-             // const green4 = ["#b0d223", "#c5e050", "#d4e979", "#e4f1a4", "#eaf4bd", "#f0f7d6", "#f6f9ea", "#f7fbed", "#f8fce8", "#f9fef2"] //yellow-green
-             // const purple2 = ["#6341b7", "#7357c5", "#846dd4", "#9279df", "#9c86e5", "#a493ec", "#b3a4f4", "#c1b3f8", "#d0c2fc", "#d8ccfe"] //purple-blue
-             // const orange = ["#ff4500", "#ff6347", "#ff8c22", "#ff7f5e", "#ff9767", "#ffaa61", "#ffca87", "#ffdbb1", "#ffedcb", "#ffeeea",] //orange-red
-             // const beige = ["#4c2d19", "#704021", "#8e5a38", "#b7774e", "#d49e74", "#f0e3c2", "#f4ebd3", "#f7f4e3", "#faf9f2", "#fcfcfa"] //beige
-             // const teal = ["#00796b", "#00897b", "#009b8b", "#00aa9b", "#00b8aa", "#00c8ba", "#00d8c9", "#00e8d9", "#00f8e9", "#00ffff"] //teal
-             // const red = ["#560f24", "#811737", "#ac1f49", "#d7275b", "#df527c", "#e77d9d", "#efa8bd", "#f7d3de", "#feffff", "#f9e0e7"]
-             // const colorPalettes = [green2, blue2, red, green, pink, orange, purple, brown, green3, gold, blue3,
-             //     red2, blue, redbrown, grey, green4, green2, brown2, grey2, teal, blue4, beige, purple2]
- 
- 
  
  
              // Add a click event listener to the reset button
@@ -556,14 +530,14 @@ By following these steps, you can create a free website that allows users to upl
                      .attr("class", "athlete-group");
  
  
-                 const yScale = d3.scaleLinear()
-                     .domain([-max_time_lag, 0])
-                     .range([height, 0]);
-                console.log("yScale", yScale* 1708);
-                const yScale2 = d3.scaleLinear()
-                     .domain([max_time_lag, 0])
-                     .range([height, 0]);
-                console.log("yScale2", yScale2* 1708);
+                //  const yScale = d3.scaleLinear()
+                //      .domain([-max_time_lag, 0])
+                //      .range([height, 0]);
+                // console.log("yScale", yScale* 1708);
+                // const yScale2 = d3.scaleLinear()
+                //      .domain([max_time_lag, 0])
+                //      .range([height, 0]);
+                // console.log("yScale2", yScale2* 1708);
                  var lineOpacity = "0.5";
                  var lineStroke = "1.0";
  
@@ -574,8 +548,6 @@ By following these steps, you can create a free website that allows users to upl
                  var legendIndex = 0;
  
                  resultsArray.forEach((athlete, athleteIndex) => {
-                     console.log(athlete);
-                     console.log(athleteIndex);
                      x = legendIndex % nColumns * (clientWidth / nColumns) - 20;
                      y = height + Math.floor(legendIndex / nColumns) * 30 + 50;
                      athleteGroup.append("rect")
@@ -599,13 +571,7 @@ By following these steps, you can create a free website that allows users to upl
                          .style("stroke-width", lineStroke)
                          .on("click", function () {
                              indexCounter = 0
-                            //  for (let i = 0; i < teamData.length; i++) {
-                            //      //for some reason team.team has quotation marks in it.  e.g. "Queens"
-                            //      if (team.team.includes(teamData[i].team)) { break; }
-                            //      indexCounter += teamData[i].athletes.length
-                            //  }
- 
-                             // //Check if the rect is selected 
+                             //Check if the rect is selected 
                              var athleteRect = d3.select(this);
                              var opacity = athleteRect.style("opacity");
                              if (opacity == 0.5) {
@@ -650,7 +616,8 @@ By following these steps, you can create a free website that allows users to upl
                          .attr("x", x + 1.2 * size)
                          .attr("y", y + 0.4 * size)
                          .attr("fill", colorPalette[athleteIndex])
-                         .text(athlete.firstName)
+                         .text(athlete.athleteName.split(' ')[0])
+                        // .text(athlete.athleteName)
                         //      return d.firstName;//.split(' ')[0];
                         //  })
                          .attr("text-anchor", "left")
@@ -660,16 +627,13 @@ By following these steps, you can create a free website that allows users to upl
                          .attr("x", x + 1.2 * size)
                          .attr("y", y + 0.9 * size)
                          .attr("fill", colorPalette[athleteIndex])
-                         .text(athlete.firstName)
+                         .text(athlete.athleteName.split(' ')[1])
                          .attr("text-anchor", "left")
                          .style("font-size", "12px")
  
                      //increment legendIndex
                      legendIndex += 1;
-                     console.log("values");
-                     console.log(athlete.values);
                      //Draw chart items (path, circles, name text)
-                     console.log("path");
                      athleteGroup.append("path")
                          .datum(athlete.values)
                          .attr("class", "line")
@@ -677,8 +641,8 @@ By following these steps, you can create a free website that allows users to upl
                          .attr("stroke", colorPalette[athleteIndex])
                          .attr("stroke-width", lineStroke)
                          .attr("d", d3.line()
-                             .x(d => { console.log("x: ", d.x, xScale(d.x)); return xScale(d.x);})
-                             .y(d => { console.log("y: ", d.y, yScale(d.y)); return yScale(d.y);}))
+                             .x(d => { return xScale(d.x);})
+                             .y(d => { return yScale(d.y);}))
                          .attr("fill", "none")
                          .style('opacity', lineOpacity)
                          .attr("clip-path", "url(#clip)")
@@ -687,7 +651,7 @@ By following these steps, you can create a free website that allows users to upl
                              svg.append("text")
                                  .attr("class", "title-text")
                                  .style("fill", colorPalette[athleteIndex])
-                                 .text(athlete)
+                                 .text(athlete.athleteName)
                                  .attr("text-anchor", "left")
                                  .attr("x", mouseX)
                                  .attr("y", mouseY)
@@ -697,7 +661,6 @@ By following these steps, you can create a free website that allows users to upl
                              svg.select(".title-text").remove();
                          });
  
-                         console.log("circle");
                      athleteGroup.selectAll(".circle")
                          .data(athlete.values)
                          .enter()
@@ -706,7 +669,7 @@ By following these steps, you can create a free website that allows users to upl
                          .style('opacity', lineOpacity)
                          .attr("fill", colorPalette[athleteIndex])
                          .attr("class", "athlete-circle")
-                         .attr("athlete", athlete)
+                         .attr("athlete", athlete.athleteName)
                         // .attr("team", team.team)
                          .attr("cy", d => yScale(d.y))
                          .attr("cx", d => xScale(d.x))
