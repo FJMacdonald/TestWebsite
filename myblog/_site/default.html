@@ -194,8 +194,6 @@ By following these steps, you can create a free website that allows users to upl
                 }
                 athletesArray.push({
                     athleteName: name,
-                    // position: athlete["Position"],
-                    // status: athlete["Status"],
                     swim: swim,
                     t1: t1,
                     bike: bike,
@@ -222,62 +220,81 @@ By following these steps, you can create a free website that allows users to upl
                 return
             }
             const colorPalette = [
-                "#ff0000", // Red
-                "#ff4500", // Orange Red
-                "#ffa500", // Orange
-                "#ffd700", // Gold
-                "#ffff00", // Yellow
-                "#9acd32", // Yellow Green
-                "#32cd32", // Lime Green
-                "#008000", // Green
-                "#006400", // Dark Green
-                "#00ff00", // Lime
-                "#00ffff", // Aqua
-                "#40e0d0", // Turquoise
-                "#008b8b", // Dark Cyan
-                "#0000ff", // Blue
-                "#4169e1", // Royal Blue
-                "#1e90ff", // Dodger Blue
-                "#87ceeb", // Sky Blue
-                "#00bfff", // Deep Sky Blue
-                "#6a5acd", // Slate Blue
-                "#8a2be2", // Blue Violet
-                "#9400d3", // Dark Violet
-                "#ba55d3", // Medium Orchid
-                "#ff69b4", // Hot Pink
-                "#ff1493", // Deep Pink
-                "#ff7f50", // Coral
-                "#dc143c", // Crimson
-                "#ff6347", // Tomato
-                "#ffa07a", // Light Salmon
-                "#cd5c5c", // Indian Red
-                "#bc8f8f", // Rosy Brown
-                "#d2691e", // Chocolate
-                "#b22222", // Fire Brick
-                "#a52a2a", // Brown
-                "#8b4513", // Saddle Brown
-                "#f0e68c", // Khaki
-                "#808000", // Olive
-                "#556b2f", // Dark Olive Green
-                "#6b8e23", // Olive Drab
-                "#2e8b57", // Sea Green
-                "#008080", // Teal
-                "#4682b4", // Steel Blue
-                "#778899", // Light Slate Gray
-                "#708090", // Slate Gray
-                "#2f4f4f", // Dark Slate Gray
-                "#a9a9a9", // Dark Gray
-                "#d3d3d3", // Light Gray
-                "#696969", // Dim Gray
-                "#ffffff", // White
-                "#000000", // Black
-                "#ff00ff", // Fuchsia
-                "#800080", // Purple
-                "#4b0082", // Indigo
-                "#800000", // Maroon
-                "#808080", // Gray
-                "#c0c0c0", // Silver
+                "#FF5733", // Red
+                "#0074D9", // Cerulean
+                "#FF851B", // Orange
+                "#39CCCC", // Cyan
+                "#FF4136", // Scarlet
+                "#2ECC40", // Green
+                "#FFDC00", // Yellow
+                "#FF6B81", // Blush
+                "#FFD700", // Gold
+                "#7FDBFF", // Azure
+                "#B10DC9", // Electric Purple
+                "#01FF70", // Lime
+                "#AAAAAA", // Grey
+                "#F012BE", // Magenta
+                "#3D9970", // Emerald
+                "#111111", // Black
+                "#F012BE", // Magenta
+                "#01FF70", // Lime
+                "#B10DC9", // Electric Purple
+                "#FF6B81", // Blush
+                "#0074D9", // Cerulean
+                "#FFD700", // Gold
+                "#AAAAAA", // Grey
+                "#7FDBFF", // Azure
+                "#2ECC40", // Green
+                "#FF4136", // Scarlet
+                "#FFDC00", // Yellow
+                "#FF851B", // Orange
+                "#0074D9", // Cerulean
+                "#FF6B81", // Blush
+                "#FFDC00", // Yellow
+                "#3D9970", // Emerald
+                "#FF851B", // Orange
+                "#F012BE", // Magenta
+                "#B10DC9", // Electric Purple
+                "#2ECC40", // Green
+                "#01FF70", // Lime
+                "#AAAAAA", // Grey
+                "#7FDBFF", // Azure
+                "#FF4136", // Scarlet
+                "#111111", // Black
+                "#FFD700", // Gold
+                "#0074D9", // Cerulean
+                "#FF5733", // Red
+                "#3D9970", // Emerald
+                "#FF6B81", // Blush
+                "#B10DC9", // Electric Purple
+                "#FF851B", // Orange
+                "#01FF70", // Lime
+                "#FF4136", // Scarlet
+                "#FFDC00", // Yellow
+                "#0074D9", // Cerulean
+                "#FFD700", // Gold
+                "#AAAAAA", // Grey
+                "#2ECC40", // Green
+                "#7FDBFF", // Azure
+                "#F012BE", // Magenta
+                "#111111", // Black
+                "#B10DC9", // Electric Purple
+                "#01FF70", // Lime
+                "#FF6B81", // Blush
+                "#FFDC00", // Yellow
+                "#FF4136", // Scarlet
+                "#3D9970", // Emerald
+                "#0074D9", // Cerulean
+                "#FF851B", // Orange
+                "#AAAAAA", // Grey
+                "#FF5733"  // Red
             ];
+// ].map(color => darken(color));
+
+//             function darken(color) {
+//                 const factor = 0.85; // Adjust this factor to control darkness
+//                 return '#' + color.slice(1).match(/.{2}/g).map(channel => Math.floor(parseInt(channel, 16) * factor).toString(16).padStart(2, '0')).join('');
+//             }
 
 
 
@@ -312,20 +329,50 @@ By following these steps, you can create a free website that allows users to upl
             //   console.log("athletesArray length", athletesArray.length);
 
             for (let i = 0; i < athletesArray.length; i++) {
-                //    console.log("athletesArray[i]", i, athletesArray[i]);
+                console.log("athletesArray[i]", i, athletesArray[i]);
                 const runDiff = athletesArray[i].run - leadersArray[4];
                 //    console.log("runDiff", runDiff);
                 if (runDiff > max_time_lag) {
                     max_time_lag = runDiff;
-                    //      console.log("max_time_lag", max_time_lag);
                 }
-                const values = [{ "x": 0, "y": 0, "diff": convertToMinutes(0) },
-                { "x": 10, "y": leadersArray[0] - athletesArray[i].swim, "diff": convertToMinutes(athletesArray[i].swim - leadersArray[0]) },
-                { "x": 12, "y": leadersArray[1] - athletesArray[i].t1, "diff": convertToMinutes(athletesArray[i].t1 - leadersArray[1]) },
-                { "x": 42, "y": leadersArray[2] - athletesArray[i].bike, "diff": convertToMinutes(athletesArray[i].bike - leadersArray[2]) },
-                { "x": 44, "y": leadersArray[3] - athletesArray[i].t2, "diff": convertToMinutes(athletesArray[i].t2 - leadersArray[3]) },
-                { "x": 64, "y": leadersArray[4] - athletesArray[i].run, "diff": convertToMinutes(athletesArray[i].run - leadersArray[4]) }];
-                //    console.log("values", values);
+                 //check for lapped out or dnf
+                if (athletesArray[i].status != ""){
+                    console.log(athletesArray[i])
+                    if (athletesArray[i].swim < 1.0) {
+                        athletesArray[i].swim = 0;
+                    }
+                    else if (athletesArray[i].t1 < 1.0) {
+                        athletesArray[i].t1 = 99999;
+                        athletesArray[i].bike = 99999;
+                        athletesArray[i].t2 = 99999;
+                        athletesArray[i].run = 99999;
+                    }
+                    else if (athletesArray[i].bike < 1.0) {
+                        athletesArray[i].bike = 99999;
+                        athletesArray[i].t2 = 99999;
+                        athletesArray[i].run = 99999;
+                    }
+                    else if (athletesArray[i].t2 < 1.0) {
+                        athletesArray[i].t2 = 99999;
+                        athletesArray[i].run = 99999;
+                    }                    
+                    else if (athletesArray[i].run < 1.0) {
+                        athletesArray[i].run = 99999;
+                    }              
+                }  
+                var values = [];              
+                if (athletesArray[i].status == "DNS"){
+                    values = [{ "x": 0, "y": 0, "diff": "" },
+                    { "x": 0, "y": 0, "diff": "" }, { "x": 0, "y": 0, "diff": "" },
+                    { "x": 0, "y": 0, "diff": "" }, { "x": 0, "y": 0, "diff": ""}];
+                } else {
+                    values = [{ "x": 0, "y": 0, "diff": convertToMinutes(0) },
+                    { "x": 10, "y": leadersArray[0] - athletesArray[i].swim, "diff": convertToMinutes(athletesArray[i].swim - leadersArray[0]) },
+                    { "x": 12, "y": leadersArray[1] - athletesArray[i].t1, "diff": convertToMinutes(athletesArray[i].t1 - leadersArray[1]) },
+                    { "x": 42, "y": leadersArray[2] - athletesArray[i].bike, "diff": convertToMinutes(athletesArray[i].bike - leadersArray[2]) },
+                    { "x": 44, "y": leadersArray[3] - athletesArray[i].t2, "diff": convertToMinutes(athletesArray[i].t2 - leadersArray[3]) },
+                    { "x": 64, "y": leadersArray[4] - athletesArray[i].run, "diff": convertToMinutes(athletesArray[i].run - leadersArray[4]) }];
+                }
                 resultsArray.push({
                     athleteName: athletesArray[i].athleteName,
                     position: athletesArray[i].position,
@@ -589,7 +636,6 @@ By following these steps, you can create a free website that allows users to upl
                         .style("stroke", "Black")
                         .style("stroke-width", lineStroke)
                         .on("click", function () {
-                            indexCounter = 0
                             //Check if the rect is selected 
                             var athleteRect = d3.select(this);
                             var opacity = athleteRect.style("opacity");
@@ -609,9 +655,20 @@ By following these steps, you can create a free website that allows users to upl
                             athleteRect.style("opacity", lineOpacity);
 
 
-                            const athleteLine = svg.selectAll(".line").filter((d, i) => i === indexCounter + athleteIndex);
+                            const athleteLine = svg.selectAll(".line").filter((d, i) => i === athleteIndex);
                             athleteLine.style("opacity", lineOpacity);
                             athleteLine.style("stroke-width", lineStroke);
+                            
+                            const athletetext = svg.selectAll(".line-text").filter((d, i) => i === athleteIndex);
+
+                            console.log("athlete text", athletetext);
+                            console.log("athlete line", athleteLine);
+                            console.log("athlete index", athleteIndex);
+                            if (lineOpacity == 1.0) {
+                                athletetext.style("visibility", "visible");
+                            } else {
+                                athletetext.style("visibility", "hidden");
+                            }
 
                             const athleteCircles = Array.from(svg.selectAll(".athlete-circle").nodes());
                             const circlesForAthlete = athleteCircles.filter(circle => d3.select(circle).attr("athlete") === athlete);
@@ -621,14 +678,6 @@ By following these steps, you can create a free website that allows users to upl
                                     .attr("r", circleRadius);
                             });
 
-
-                            const athletetext = svg.selectAll(".line-text").filter((d, i) => i === indexCounter + athleteIndex);
-
-                            if (lineOpacity == 1.0) {
-                                athletetext.style("visibility", "visible");
-                            } else {
-                                athletetext.style("visibility", "hidden");
-                            }
                         });
                     //Add athlete first name next to rect
                     athleteGroup.append("text")
@@ -636,9 +685,6 @@ By following these steps, you can create a free website that allows users to upl
                         .attr("y", y + 0.4 * size)
                         .attr("fill", colorPalette[athleteIndex])
                         .text(athlete.athleteName.split(' ')[0])
-                        // .text(athlete.athleteName)
-                        //      return d.firstName;//.split(' ')[0];
-                        //  })
                         .attr("text-anchor", "left")
                         .style("font-size", "12px")
                     //Add last name next to rect
@@ -646,12 +692,13 @@ By following these steps, you can create a free website that allows users to upl
                         .attr("x", x + 1.2 * size)
                         .attr("y", y + 0.9 * size)
                         .attr("fill", colorPalette[athleteIndex])
-                        .text(athlete.athleteName.split(' ')[1])
+                        .text(athlete.athleteName.split(' ')[1] + " " + athlete.status)
                         .attr("text-anchor", "left")
                         .style("font-size", "12px")
 
                     //increment legendIndex
                     legendIndex += 1;
+                    
                     //Draw chart items (path, circles, name text)
                     athleteGroup.append("path")
                         .datum(athlete.values)
@@ -680,7 +727,21 @@ By following these steps, you can create a free website that allows users to upl
                             svg.select(".title-text").remove();
                         });
 
-                    athleteGroup.selectAll(".circle")
+ 
+                    athleteGroup.selectAll(".text")
+                            .data(athlete.values)
+                            .enter()
+                            .append("text")
+                            .attr("class", "line-text")
+                            .attr("x", xScale(raceLength - 5))
+                            .attr("y", d => yScale(d.y))
+                            .attr("fill", colorPalette[athleteIndex])
+                            .text(athlete.athleteName.split(' ')[0] )
+                          //  .style("visibility", "hidden")
+                            .attr("text-anchor", "left")
+                            .style("font-size", "10px");
+                            
+                   athleteGroup.selectAll(".circle")
                         .data(athlete.values)
                         .enter()
                         .append("circle")
@@ -715,19 +776,7 @@ By following these steps, you can create a free website that allows users to upl
                                 .selectAll(".text").remove();
                         });
 
-                    //  athleteGroup.selectAll(".text")
-                    //      .data([team.values[athleteIndex][5]])
-                    //      .enter()
-                    //      .append("text")
-                    //      .attr("class", "line-text")
-                    //      .text(team.athletes[athleteIndex])
-                    //      .attr("x", xScale(raceLength - 5))
-                    //      .attr("y", d => yScale(d.y))
-                    //      .attr("fill", colorPalette[athleteIndex])
-                    //      .text(function (d) { return athleteName.split(' ')[0] })
-                    //      .attr("text-anchor", "left")
-                    //      .style("font-size", "10px")
-                    //      .style("visibility", "hidden");
+                            
 
                 });
 
