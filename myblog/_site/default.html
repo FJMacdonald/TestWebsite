@@ -72,6 +72,14 @@ By following these steps, you can create a free website that allows users to upl
         
         // Function to handle file upload
         function handleFileUpload(event) {
+            // clear any previous chart
+            var svg = d3.select("#chart")
+            svg.selectAll('*').remove();
+            //reset the data arrays
+            athletesArray.length = 0
+            leadersArray.length = 0
+            max_time_lag = 0;
+
             const file = event.target.files[0]; // Get the uploaded file
             title = file["name"].replace(/Results for |.csv/g, "");
             // Get the div element by its ID
@@ -216,6 +224,9 @@ By following these steps, you can create a free website that allows users to upl
 
         // Draws the chart
         function drawChart(athletesArray, leadersArray) {
+
+          
+            
             if (athletesArray.length == 0) {
                 return
             }
@@ -303,6 +314,7 @@ By following these steps, you can create a free website that allows users to upl
 
             // Function to reset the chart
             function resetChart() {
+                
                 console.log("reset chart");
                 // Reset the y-axis scale to its original domain
                 yScale.domain([-max_time_lag, 0]);
@@ -407,7 +419,7 @@ By following these steps, you can create a free website that allows users to upl
                 width = clientWidth - margin.left - margin.right,
                 height = 500
             // append the svg object to the body of the page
-            var svg = d3.select("#chart")
+            svg = d3.select("#chart")
                 .append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
@@ -514,6 +526,7 @@ By following these steps, you can create a free website that allows users to upl
                     .attr("cy", d => yScale(d.y));
 
                 // Update labels
+               // svg.selectAll(".text").remove();
                 svg.selectAll(".line-text")
                     .attr("y", d => yScale(d.y));
 
@@ -681,6 +694,7 @@ By following these steps, you can create a free website that allows users to upl
                         });
                     //Add athlete first name next to rect
                     athleteGroup.append("text")
+                        .attr("class", "athlete-ledgend")
                         .attr("x", x + 1.2 * size)
                         .attr("y", y + 0.4 * size)
                         .attr("fill", colorPalette[athleteIndex])
@@ -689,6 +703,7 @@ By following these steps, you can create a free website that allows users to upl
                         .style("font-size", "12px")
                     //Add last name next to rect
                     athleteGroup.append("text")
+                        .attr("class", "athlete-ledgend")
                         .attr("x", x + 1.2 * size)
                         .attr("y", y + 0.9 * size)
                         .attr("fill", colorPalette[athleteIndex])
@@ -715,7 +730,7 @@ By following these steps, you can create a free website that allows users to upl
                         .on("mouseover", function (d, i) {
                             const [mouseX, mouseY] = d3.pointer(event, this);
                             svg.append("text")
-                                .attr("class", "title-text")
+                                .attr("class", "line-text")
                                 .style("fill", colorPalette[athleteIndex])
                                 .text(athlete.athleteName)
                                 .attr("text-anchor", "left")
@@ -724,7 +739,7 @@ By following these steps, you can create a free website that allows users to upl
                                 .style("font-size", "12px")
                         })
                         .on("mouseout", function (d) {
-                            svg.select(".title-text").remove();
+                            svg.select(".line-text").remove();
                         });
 
  
@@ -733,6 +748,7 @@ By following these steps, you can create a free website that allows users to upl
                             .enter()
                             .append("text")
                             .attr("class", "line-text")
+                            .attr("clip-path", "url(#clip)")
                             .attr("x", xScale(raceLength - 5))
                             .attr("y", d => yScale(d.y))
                             .attr("fill", colorPalette[athleteIndex])
