@@ -209,6 +209,7 @@ By following these steps, you can create a free website that allows users to upl
                      run: run,
                      position: results[i]["Position"],
                      status: results[i]["Status"],
+                     country: results[i]["Country"],
                  });
                  //        console.log(name + " pushed")
                  leadersArray[0] = leadSwim;
@@ -389,6 +390,7 @@ By following these steps, you can create a free website that allows users to upl
                      athleteName: athletesArray[i].athleteName,
                      position: athletesArray[i].position,
                      status: athletesArray[i].status,
+                     country: athletesArray[i].country,
                      values: values,
                  });
              }
@@ -410,7 +412,7 @@ By following these steps, you can create a free website that allows users to upl
              //rectangles in the legend (athletes + teams)
              nRects = athletesArray.length
              const clientWidth = d3.select("#chart").node().getBoundingClientRect().width;
-             const nColumns = Math.trunc(clientWidth / 120);
+             const nColumns = Math.trunc(clientWidth / 150);
              const bottom = Math.ceil(nRects / nColumns) * size * 1.2 + 70;
  
  
@@ -625,25 +627,34 @@ By following these steps, you can create a free website that allows users to upl
                  const circleRadiusHover = 6;
  
  
-                 //  var legendIndex = 0;
- 
+                 //  x position for rect
                  function rectPosX(d, i) {
                      return (i % nColumns) * (clientWidth / nColumns) - 20;
                  }
                  function rectPosY(d, i) {
                      return (height + Math.floor(i / nColumns) * 30 + 50);
                  }
+                 //  x position for names
                  function labelPosX(d, i) {
                      return ((i % nColumns) * (clientWidth / nColumns) - 20) + 1.2 * size;
                  }
+                 //  x position for country code
+                 function labelPosX2(d, i) {
+                     return ((i % nColumns) * (clientWidth / nColumns) - 20) + 1.2 * size + 60;
+                 }
+                 // y position for first name
                  function labelPosY(d, i) {
                      return (height + Math.floor(i / nColumns) * 30 + 50) + 0.4 * size;
                  }
+                 // y position for last name
                  function labelPosY2(d, i) {
                      return (height + Math.floor(i / nColumns) * 30 + 50) + 0.9 * size;
                  }
-                 // resultsArray.forEach((athlete, athleteIndex) => {
- 
+                 // y position for country code
+                 function labelPosY3(d, i) {
+                     return (height + Math.floor(i / nColumns) * 30 + 50) + 0.6 * size;
+                 } 
+                 //add the frame for the rectangle (so it doesn't disapear when opacity = 0)
                  svg.append("g")
                      .selectAll("outerRect")
                      .data(resultsArray)
@@ -656,6 +667,7 @@ By following these steps, you can create a free website that allows users to upl
                      .style("stroke", "Black")
                      .style("stroke-width", lineStroke)
                      .attr("fill", "white");
+                // the color for the rect but also the interactivity
                  svg.selectAll("innerRect")
                      .data(resultsArray)
                      .join("rect")
@@ -669,9 +681,10 @@ By following these steps, you can create a free website that allows users to upl
                      .style('opacity', lineOpacity)
                      .attr("fill", function (d, i) { return colorPalette[i]; })
                      .on("click", function (d, i) {
- 
+                        // get the current state from the opacity
                          var athleteRect = d3.select(this);
                          var opacity = athleteRect.style("opacity");
+                         // cycle through 3 states - normal, highlighted and remove
                          if (opacity == 0.5) {
                              lineOpacity = 1.0
                              lineStroke = 3.0
@@ -685,18 +698,18 @@ By following these steps, you can create a free website that allows users to upl
                              lineStroke = 1.0
                              circleRadius = 3
                          }
+                         // set the new state of the rect
                          athleteRect.style("opacity", lineOpacity);
-                         const athlete = i;
- 
+                         
+                         // get the athlete index (with a mouse function(d, i) -  d is the mouse and i is the athlete)
                          const athleteIndex = d3.selectAll('.innerRect').nodes().indexOf(this);
-                         console.log("selected athlete", i, athleteIndex);
- 
- 
+
+                         // fiter for the corresponding athlete path & update it with new state
                          const athleteLine = svg.selectAll(".line").filter((d, i) => i === athleteIndex);
                          athleteLine.style("opacity", lineOpacity);
                          athleteLine.style("stroke-width", lineStroke);
  
- 
+                        // fiter for the corresponding athlete label & update it with new state
                          const athletetext = svg.selectAll(".line-name").filter((d, i) => i === athleteIndex);
                          if (lineOpacity == 1.0) {
                              athletetext.style("visibility", "visible");
@@ -704,10 +717,8 @@ By following these steps, you can create a free website that allows users to upl
                              athletetext.style("visibility", "hidden");
                          }
  
- 
-                         const athleteCircles = svg.selectAll(".athlete-circle")
-                             .filter(d => d.athleteIndex === athleteIndex);
- 
+                        // fiter for the corresponding athlete path circles & update them with new state
+                         const athleteCircles = svg.selectAll(".athlete-circle").filter(d => d.athleteIndex === athleteIndex);
                          athleteCircles.each(function (d) {
                              d3.select(this)
                                  .style("opacity", lineOpacity)
@@ -715,10 +726,10 @@ By following these steps, you can create a free website that allows users to upl
                          });
                      });
                  //Add athlete first name next to rect
-                 svg.selectAll(".label1")
+                 svg.selectAll(".label-firstname")
                      .data(resultsArray)
                      .join("text")
-                     .attr("class", "label1")
+                     .attr("class", "label-firstname")
                      .attr("x", labelPosX)
                      .attr("y", labelPosY)
                      .attr("fill", function (d, i) { return colorPalette[i]; })
@@ -726,18 +737,29 @@ By following these steps, you can create a free website that allows users to upl
                      .attr("text-anchor", "left")
                      .style("font-size", "12px");
                  //Add last name next to rect
-                 svg.selectAll(".label2")
+                 svg.selectAll(".label-lastname")
                      .data(resultsArray)
                      .join("text")
-                     .attr("class", "label2")
+                     .attr("class", "label-lastname")
                      .attr("x", labelPosX)
                      .attr("y", labelPosY2)
                      .attr("fill", function (d, i) { return colorPalette[i]; })
                      .text(function (d) { return d.athleteName.split(' ')[1] + " " + d.status; })
                      .attr("text-anchor", "left")
                      .style("font-size", "12px");
- 
-                 //Draw chart items (path, circles, name text)
+                  //Add country code next to name
+                  svg.selectAll(".label-country")
+                     .data(resultsArray)
+                     .join("text")
+                     .attr("class", "label-country")
+                     .attr("x", labelPosX2)
+                     .attr("y", labelPosY3)
+                     .attr("fill", function (d, i) { return colorPalette[i]; })
+                     .text(function (d) { return d.country; })
+                     .attr("text-anchor", "left")
+                     .style("font-size", "12px");
+
+                 //Draw path
                  svg.selectAll("path")
                      .data(resultsArray)
                      .join("path")
@@ -770,7 +792,7 @@ By following these steps, you can create a free website that allows users to upl
                      .on("mouseout", function (d) {
                          svg.select(".line-text").remove();
                      });
- 
+                 //Draw circles at path coordinates
                  svg.selectAll("circle")
                      .data(resultsArray)
                      .enter()
@@ -808,7 +830,7 @@ By following these steps, you can create a free website that allows users to upl
                          svg
                              .selectAll(".text").remove();
                      });
- 
+                 //Label paths with athlete ffirst names
                  svg.selectAll("text.line-name")
                      .data(resultsArray)
                      .enter()
@@ -819,14 +841,10 @@ By following these steps, you can create a free website that allows users to upl
                      .attr("text-anchor", "end") // Anchor text to the end of the path
                      .attr("x", d => xScale(d.values[d.values.length - 1].x + 0.5)) // X position based on the last x-coordinate
                      .attr("y", d => yScale(d.values[d.values.length - 1].y)) // Y position based on the last y-coordinate
+                     .attr("clip-path", "url(#clip-labels)")
                      .style("font-size", "12px")
                      .style("visibility", "hidden")
                      .attr("text-anchor", "left");
- 
- 
- 
- 
- 
  
  
                  // Define clipping path for lines
@@ -836,7 +854,7 @@ By following these steps, you can create a free website that allows users to upl
                      .attr("width", width)
                      .attr("height", height);
  
- 
+                // Define clipping path for line-labels
                  svg.append("defs").append("clipPath")
                      .attr("id", "clip-labels")
                      .append("rect")
