@@ -224,9 +224,7 @@ By following these steps, you can create a free website that allows users to upl
 
         // Draws the chart
         function drawChart(athletesArray, leadersArray) {
-
-          
-            
+    
             if (athletesArray.length == 0) {
                 return
             }
@@ -419,7 +417,7 @@ By following these steps, you can create a free website that allows users to upl
                 width = clientWidth - margin.left - margin.right,
                 height = 500
             // append the svg object to the body of the page
-            svg = d3.select("#chart")
+            var svg = d3.select("#chart")
                 .append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
