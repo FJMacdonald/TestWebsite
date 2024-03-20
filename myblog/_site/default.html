@@ -863,16 +863,13 @@ By following these steps, you can create a free website that allows users to upl
                      .attr("y", -10);
  
  
-                 // Add Axis into SVG 
+                 // Add x-axis
                  var xAxis = d3.axisTop(xScale).ticks(0);
-                 //            var yAxis = d3.axisLeft(yScale).ticks(0);
- 
- 
                  svg.append("g")
                      .attr("class", "x axis")
                      .call(xAxis);
  
- 
+                // Add y-axis
                  svg.append("g")
                      .attr("class", "y axis")
                      .call(yAxis)
@@ -883,14 +880,13 @@ By following these steps, you can create a free website that allows users to upl
                      .attr("transform", "rotate(-90)")
                      .attr("fill", "#000")
                      .text("Time Behind Leader");
- 
- 
- 
+
                  // Call the function to draw gridlines
                  drawVerticalGridlines(svg, 10);
                  drawVerticalGridlines(svg, 12);
                  drawVerticalGridlines(svg, 42);
                  drawVerticalGridlines(svg, 44);
+
                  // Function to draw vertical gridlines
                  function drawVerticalGridlines(selection, x) {
                      selection
@@ -906,9 +902,7 @@ By following these steps, you can create a free website that allows users to upl
                          .style("stroke-width", 0.5);
                  }
  
- 
- 
- 
+
                  //function to annotate chrt 
                  function annotateChart(selection, x, y, text) {
                      selection
