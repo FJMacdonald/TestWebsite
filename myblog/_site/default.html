@@ -40,15 +40,19 @@ By following these steps, you can create a free website that allows users to upl
 </head>
 
 <body>
-    <p>Directions: go to https://triathlon.org/results and find the race you want to chart. 
-        Download the XLS file, open it and save it as a CSV file.  Open the CSV file in this site.
+    <h4>Instructions:</h4> 
+    <ul>
+        <li>Get results file from https://triathlon.org/results</li> 
+        <li>Download the XLS file, open it and save it as a CSV file.</li> 
+        <li>Open the CSV file here.</li>
+    </ul>
     </p>
     <!-- Initialize the ffile select button -->
-    <input type="file" id="csvFileInput" accept=".csv">
+    <input class="button" type="file" id="csvFileInput" accept=".csv">
     <div id="csvData"></div>
 
     <!-- Initialize the reset button -->
-    <button id="resetButton" style="margin-bottom: 10px">Reset</button>
+    <button class="button" id="resetButton" style="margin-bottom: 10px">Reset</button>
 
     <!-- Create a div where the graph will take place -->
     <div>
@@ -96,7 +100,7 @@ By following these steps, you can create a free website that allows users to upl
             let chartTitleDiv = document.getElementById("chart_title");
 
             // Update the inner HTML of the div with the new title
-            chartTitleDiv.innerHTML = title;
+            chartTitleDiv.innerHTML = "<h1>" + title + "</h1>";
 
             // Create a new FileReader object
             const reader = new FileReader();
@@ -245,7 +249,7 @@ By following these steps, you can create a free website that allows users to upl
                     // Update the inner HTML of the div with the new title
                     chartTitleDiv.innerHTML = problemString;
                     // Add a red border to the chartTitleDiv
-                    chartTitleDiv.style.border = "2px solid red";
+                    chartTitleDiv.style = "border: 1px solid red; border-radius: 5px;";
                 }
             }
         }
@@ -413,7 +417,7 @@ By following these steps, you can create a free website that allows users to upl
                     athleteName: athletesArray[i].athleteName,
                     position: athletesArray[i].position,
                     status: athletesArray[i].status,
-                    country: athletesArray[i].country,
+                    country: getCountryFlagEmoji(athletesArray[i].country),
                     values: values,
                 });
             }
@@ -659,18 +663,18 @@ By following these steps, you can create a free website that allows users to upl
 
                 //  x position for rect
                 function rectPosX(d, i) {
-                    return (i % nColumns) * (clientWidth / nColumns) - 40;
+                    return (i % nColumns) * (clientWidth / nColumns) - 50;
                 }
                 function rectPosY(d, i) {
                     return (height + Math.floor(i / nColumns) * 30 + 50);
                 }
                 //  x position for names
                 function labelPosX(d, i) {
-                    return ((i % nColumns) * (clientWidth / nColumns) - 40) + 1.2 * size;
+                    return ((i % nColumns) * (clientWidth / nColumns) - 50) + 1.2 * size;
                 }
                 //  x position for country code
                 function labelPosX2(d, i) {
-                    return ((i % nColumns) * (clientWidth / nColumns) - 40) + 1.2 * size + 120;
+                    return ((i % nColumns) * (clientWidth / nColumns) - 50) + 1.2 * size + 120;
                 }
                 // y position for first name
                 function labelPosY(d, i) {
@@ -783,7 +787,8 @@ By following these steps, you can create a free website that allows users to upl
                     .attr("x", labelPosX2)
                     .attr("y", labelPosY3)
                     .attr("fill", function (d, i) { return colorPalette[i]; })
-                    .text(function (d) { return d.country; });
+                    .text(function (d) { return d.country; })
+                    .attr("font-size", 25);
             
 
                 //Draw path
@@ -929,6 +934,56 @@ By following these steps, you can create a free website that allows users to upl
                 annotateChart(svg, 52, -10, 'Run');
 
             }
+        }
+
+        function getCountryFlagEmoji(countryCode) {
+            const flagMappings = {
+                'AFG': '🇦🇫', 'ALA': '🇦🇽', 'ALB': '🇦🇱', 'DZA': '🇩🇿', 'ASM': '🇦🇸',
+                'AND': '🇦🇩', 'AGO': '🇦🇴', 'AIA': '🇦🇮', 'ATA': '🇦🇶', 'ATG': '🇦🇬',
+                'ARG': '🇦🇷', 'ARM': '🇦🇲', 'ABW': '🇦🇼', 'AUS': '🇦🇺', 'AUT': '🇦🇹',
+                'AZE': '🇦🇿', 'BHS': '🇧🇸', 'BHR': '🇧🇭', 'BGD': '🇧🇩', 'BRB': '🇧🇧',
+                'BLR': '🇧🇾', 'BEL': '🇧🇪', 'BLZ': '🇧🇿', 'BEN': '🇧🇯', 'BMU': '🇧🇲',
+                'BTN': '🇧🇹', 'BOL': '🇧🇴', 'BIH': '🇧🇦', 'BWA': '🇧🇼', 'BVT': '🇧🇻',
+                'BRA': '🇧🇷', 'IOT': '🇮🇴', 'BRN': '🇧🇳', 'BGR': '🇧🇬', 'BFA': '🇧🇫',
+                'BDI': '🇧🇮', 'KHM': '🇰🇭', 'CMR': '🇨🇲', 'CAN': '🇨🇦', 'CPV': '🇨🇻',
+                'CYM': '🇰🇾', 'CAF': '🇨🇫', 'TCD': '🇹🇩', 'CHL': '🇨🇱', 'CHN': '🇨🇳',
+                'CXR': '🇨🇽', 'CCK': '🇨🇨', 'COL': '🇨🇴', 'COM': '🇰🇲', 'COG': '🇨🇬',
+                'COD': '🇨🇩', 'COK': '🇨🇰', 'CRI': '🇨🇷', 'CIV': '🇨🇮', 'HRV': '🇭🇷',
+                'CUB': '🇨🇺', 'CYP': '🇨🇾', 'CZE': '🇨🇿', 'DNK': '🇩🇰', 'DJI': '🇩🇯',
+                'DMA': '🇩🇲', 'DOM': '🇩🇴', 'ECU': '🇪🇨', 'EGY': '🇪🇬', 'SLV': '🇸🇻',
+                'GNQ': '🇬🇶', 'ERI': '🇪🇷', 'EST': '🇪🇪', 'ETH': '🇪🇹', 'FLK': '🇫🇰',
+                'FRO': '🇫🇴', 'FJI': '🇫🇯', 'FIN': '🇫🇮', 'FRA': '🇫🇷', 'GUF': '🇬🇫',
+                'PYF': '🇵🇫', 'ATF': '🇹🇫', 'GAB': '🇬🇦', 'GMB': '🇬🇲', 'GEO': '🇬🇪',
+                'DEU': '🇩🇪', 'GHA': '🇬🇭', 'GIB': '🇬🇮', 'GRC': '🇬🇷', 'GRL': '🇬🇱',
+                'GRD': '🇬🇩', 'GLP': '🇬🇵', 'GUM': '🇬🇺', 'GTM': '🇬🇹', 'GGY': '🇬🇬',
+                'GIN': '🇬🇳', 'GNB': '🇬🇼', 'GUY': '🇬🇾', 'HTI': '🇭🇹', 'HMD': '🇭🇲',
+                'VAT': '🇻🇦', 'HND': '🇭🇳', 'HKG': '🇭🇰', 'HUN': '🇭🇺', 'ISL': '🇮🇸',
+                'IND': '🇮🇳', 'IDN': '🇮🇩', 'IRN': '🇮🇷', 'IRQ': '🇮🇶', 'IRL': '🇮🇪',
+                'IMN': '🇮🇲', 'ISR': '🇮🇱', 'ITA': '🇮🇹', 'JAM': '🇯🇲', 'JPN': '🇯🇵',
+                'JEY': '🇯🇪', 'JOR': '🇯🇴', 'KAZ': '🇰🇿', 'TRI': '🇹🇹', 'POR': '🇵🇹',
+                'KEN': '🇰🇪', 'KIR': '🇰🇮', 'PRK': '🇰🇵', 'KOR': '🇰🇷', 'KWT': '🇰🇼',
+                'KGZ': '🇰🇬', 'LAO': '🇱🇦', 'LVA': '🇱🇻', 'LBN': '🇱🇧', 'LSO': '🇱🇸',
+                'LBR': '🇱🇷', 'LBY': '🇱🇾', 'LIE': '🇱🇮', 'LTU': '🇱🇹', 'LUX': '🇱🇺',
+                'MAC': '🇲🇴', 'MKD': '🇲🇰', 'MDG': '🇲🇬', 'MWI': '🇲🇼', 'MYS': '🇲🇾',
+                'MDV': '🇲🇻', 'MLI': '🇲🇱', 'MLT': '🇲🇹', 'MHL': '🇲🇭', 'MTQ': '🇲🇶',
+                'MRT': '🇲🇷', 'MUS': '🇲🇺', 'MYT': '🇾🇹', 'MEX': '🇲🇽', 'FSM': '🇫🇲',
+                'MDA': '🇲🇩', 'MCO': '🇲🇨', 'MNG': '🇲🇳', 'MNE': '🇲🇪', 'MSR': '🇲🇸',
+                'MAR': '🇲🇦', 'MOZ': '🇲🇿', 'MMR': '🇲🇲', 'NAM': '🇳🇦', 'NRU': '🇳🇷',
+                'NPL': '🇳🇵', 'NLD': '🇳🇱', 'NCL': '🇳🇨', 'NZL': '🇳🇿', 'NIC': '🇳🇮',
+                'NER': '🇳🇪', 'NGA': '🇳🇬', 'NIU': '🇳🇺', 'NFK': '🇳🇫', 'MNP': '🇲🇵',
+                'NOR': '🇳🇴', 'OMN': '🇴🇲', 'PAK': '🇵🇰', 'PLW': '🇵🇼', 'PSE': '🇵🇸',
+                'PAN': '🇵🇦', 'PNG': '🇵🇬', 'PRY': '🇵🇾', 'PER': '🇵🇪', 'PHL': '🇵🇭',
+                'PCN': '🇵🇳', 'POL': '🇵🇱', 'PRT': '🇵🇹', 'PRI': '🇵🇷', 'QAT': '🇶🇦',
+                'REU': '🇷🇪', 'ROU': '🇷🇴', 'RUS': '🇷🇺', 'RWA': '🇷🇼', 'BLM': '🇧🇱',
+                'SHN': '🇸🇭', 'KNA': '🇰🇳', 'LCA': '🇱🇨', 'MAF': '🇲🇫', 'SPM': '🇵🇲',
+                'VCT': '🇻🇨', 'WSM': '🇼🇸', 'SMR': '🇸🇲', 'STP': '🇸🇹', 'SAU': '🇸🇦',
+                'SEN': '🇸🇳', 'SRB': '🇷🇸', 'SYC': '🇸🇨', 'SLE': '🇸🇱', 'SGP': '🇸🇬',
+                'SXM': '🇸🇽', 'SVK': '🇸🇰', 'SVN': '🇸🇮', 'SLB': '🇸🇧', 'SOM': '🇸🇴',
+                'ZAF': '🇿🇦', 'USA': '🇺🇸', 'GER': '🇩🇪', 'ESP': '🇪🇸', 'NED': '🇳🇱', 
+                'DEN': '🇩🇰', 'GBR': '🇬🇧', 'RSA': '🇿🇦', 'SUI': '🇨🇭', 'CHI': '🇨🇱', 
+                'BER': '🇧🇲', 'ZIM': '🇿🇼', 'VEN': '🇻🇪', 'CRC': '🇨🇷',
+            }
+            return flagMappings[countryCode] || countryCode;
         }
     </script>
 </body>
