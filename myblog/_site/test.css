@@ -1,0 +1,8 @@
+/* class = "label" used on graph */
+.label {
+  text-align: center;
+  color: black;
+  font-size: 14;
+  font-family: 'Courier New';
+  text-anchor: left;
+}
