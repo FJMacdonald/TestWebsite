@@ -186,40 +186,40 @@ By following these steps, you can create a free website that allows users to upl
                 const t1_abs = t1;
                 if (t1 != 0) {
                     t1 += swim;
-                    if (t1 < fastestSplit[1]) {
-                        fastestSplit[1] = t1;
-                    } else if (t1 > slowestSplit[1]) {
-                        slowestSplit[1] = t1;
+                    if (t1_abs < fastestSplit[1]) {
+                        fastestSplit[1] = t1_abs;
+                    } else if (t1_abs > slowestSplit[1]) {
+                        slowestSplit[1] = t1_abs;
                     }
                 }
                 var bike = convertToSeconds(results[i]["Bike"]);
                 const bike_abs = bike;
                 if (bike != 0) {
                     bike += t1;
-                    if (bike < fastestSplit[2]) {
-                        fastestSplit[2] = bike;
-                    } else if (bike > slowestSplit[2]) {
-                        slowestSplit[2] = bike;
+                    if (bike_abs < fastestSplit[2]) {
+                        fastestSplit[2] = bike_abs;
+                    } else if (bike_abs > slowestSplit[2]) {
+                        slowestSplit[2] = bike_abs;
                     }
                 }
                 var t2 = convertToSeconds(results[i]["T2"]);
                 const t2_abs = t2;
                 if (t2 != 0) {
                     t2 += bike;
-                    if (t2 < fastestSplit[3]) {
-                        fastestSplit[3] = t2;
-                    } else if (t2 > slowestSplit[3]) {
-                        slowestSplit[3] = t2;
+                    if (t2_abs < fastestSplit[3]) {
+                        fastestSplit[3] = t2_abs;
+                    } else if (t2_abs > slowestSplit[3]) {
+                        slowestSplit[3] = t2_abs;
                     }
                 }
                 var run = convertToSeconds(results[i]["Run"]);
                 const run_abs = run;
                 if (run != 0) {
                     run += t2;
-                    if (run < fastestSplit[4]) {
-                        fastestSplit[4] = run;
-                    } else if (run > slowestSplit[4]) {
-                        slowestSplit[4] = run;
+                    if (run_abs < fastestSplit[4]) {
+                        fastestSplit[4] = run_abs;
+                    } else if (run_abs > slowestSplit[4]) {
+                        slowestSplit[4] = run_abs;
                     }
                 }
                 var finalTimeInSeconds = convertToSeconds(finalTime);
@@ -227,36 +227,37 @@ By following these steps, you can create a free website that allows users to upl
                     problemIndexArray.push(i)
                     problemTimes++;
                 }
+                timePerDisipline = [swim, t1_abs, bike_abs, t2_abs, run_abs];
                 if (i == 0) {
                     leadSwim = swim;
                     leadT1 = t1;
                     leadBike = bike;
                     leadT2 = t2;
                     leadRun = run;
-                    console.log(swim, t1, bike, t2, run);
-                    console.log("lead swimmer: " + name);
+                 //   console.log(swim, t1, bike, t2, run);
+                //    console.log("lead swimmer: " + name);
                 } else {
                     if (swim != 0 && swim < leadSwim) {
                         leadSwim = swim;
-                        console.log("lead swimmer: " + name);
+                       // console.log("lead swimmer: " + name);
                     }
                     if (t1 != 0 && t1 < leadT1) {
                         leadT1 = t1;
-                        console.log("lead t1: " + name);
+                      //  console.log("lead t1: " + name);
                     }
                     if (bike != 0 && bike < leadBike) {
                         leadBike = bike;
-                        console.log("lead biker: " + name);
+                       // console.log("lead biker: " + name);
                     }
                     if (t2 != 0 && t2 < leadT2) {
                         leadT2 = t2;
-                        console.log("lead t2: " + name);
+                    //    console.log("lead t2: " + name);
                     }
                     if (run != 0 && run < leadRun) {
                         leadRun = run;
-                        console.log("lead runner: " + name);
+                    //    console.log("lead runner: " + name);
                     }
-                    timePerDisipline = [swim, t1_abs, bike_abs, t2_abs, run_abs];
+                    
                 }
                 athletesArray.push({
                     athleteName: name,
@@ -791,11 +792,11 @@ By following these steps, you can create a free website that allows users to upl
                         const athletetext = svg.selectAll(".line-name").filter((d, i) => i === athleteIndex);
                         if (lineOpacity == 1.0) {
                             athletetext.style("visibility", "visible");
-                            athleteIndexArray.push(i);
+                            athleteIndexArray.push(athleteIndex);
                         } else {
                             athletetext.style("visibility", "hidden");
                             //remove athlete from spider chart
-                            let index = athleteIndexArray.indexOf(i);
+                            let index = athleteIndexArray.indexOf(athleteIndex);
                             if (index !== -1) {
                                 athleteIndexArray.splice(index, 1);
                             }
@@ -1061,9 +1062,8 @@ By following these steps, you can create a free website that allows users to upl
                 const normalizedBike = 1 - (athletesArray[i].timePerDisipline[2] - fastestSplits[2]) / (slowestSplits[2] - fastestSplits[2]);
                 const normalizedT2 = 1 - (athletesArray[i].timePerDisipline[3] - fastestSplits[3]) / (slowestSplits[3] - fastestSplits[3]);
                 const normalizedRun = 1 - (athletesArray[i].timePerDisipline[4] - fastestSplits[4]) / (slowestSplits[4] - fastestSplits[4]);
-
                 spiderChartArray.push({
-                    athleteName: athletesArray[i].name,
+                    athleteName: athletesArray[i].athleteName,
                     values: {
                         'Swim': normalizedSwim,
                         'T1': normalizedT1,
@@ -1085,16 +1085,12 @@ By following these steps, you can create a free website that allows users to upl
 
 
 
-        function drawSpiderChart(athleteIndexArray) {
+        function drawSpiderChart(selectedAthletes) {
+            
             var selectedAthletes = [];
             for (let i = 0; i < athleteIndexArray.length; i++) {
-                selectedAthletes.push(athletesArray[athleteIndexArray[i]]);
+                selectedAthletes.push(spiderChartArray[athleteIndexArray[i]]);
             }
-            console.log("selectedAthletes", selectedAthletes);
-            
-
-
-
 
             // set the dimensions and margins of the graph
             var margin = { top: 10, right: 10, bottom: 0, left: 10 };
@@ -1103,6 +1099,7 @@ By following these steps, you can create a free website that allows users to upl
             if (width < 500)
                 margin.bottom = 50;
             // append the svg object to the body of the page
+            d3.select("#spider_chart").selectAll('*').remove();
             var spider_svg = d3.select("#spider_chart")
                 .append("svg")
                 .attr("width", width + margin.left + margin.right)
@@ -1169,11 +1166,11 @@ By following these steps, you can create a free website that allows users to upl
                     .data(ticks)
                     .join(
                         enter => enter.append("text")
-                            .attr("class", "ticklabel")
+                            .attr("class", "label ticklabel")
                             .attr("x", width / 2 + 5)
                             .attr("y", d => height / 2 - radialScale(d))
                             .text(d => d.toString())
-                            .style("font-size", "12px")
+                           // .style("font-size", "12px")
                     );
 
                 function angleToCoordinate(angle, value) {
@@ -1210,8 +1207,9 @@ By following these steps, you can create a free website that allows users to upl
                         enter => enter.append("text")
                             .attr("x", d => d.label_coord.x)
                             .attr("y", d => d.label_coord.y)
+                            .attr("class", "label")
                             .text(d => d.name)
-                            .style("font-size", "14px")
+                          //  .style("font-size", "14px")
                     )
                     .attr("transform",
                         "translate(-10, 5)");
@@ -1246,7 +1244,6 @@ By following these steps, you can create a free website that allows users to upl
                         }
                     })
                     .attr("y", function (d, i) {
-                        console.log(i % 2)
                         if (width > 500) {
                             return margin.top + i * (size + rectSpacing);
                         } else {
@@ -1271,7 +1268,7 @@ By following these steps, you can create a free website that allows users to upl
 
 
                         // Replace spaces with hyphens in the class name
-                        const className = i.athlete.replace(/\s+/g, '-').toLowerCase();
+                        const className = i.athleteName.replace(/\s+/g, '-').toLowerCase();
                         const pathOpacity = currentOpacity === 1 ? opacity_off : opacity_on;
                         // Select the path using the modified class name
                         const clickedPath = athleteGroup.select(`.${className}`);
@@ -1285,6 +1282,7 @@ By following these steps, you can create a free website that allows users to upl
                     .data(selectedAthletes)
                     .enter()
                     .append("text")
+                    .attr("class", "label")
                     .attr("x", function (d, i) {
                         even = i % 2
                         if (width > 500) {
@@ -1303,11 +1301,11 @@ By following these steps, you can create a free website that allows users to upl
                                 return height + size / 2 + rectSpacing;
                         }
                     })
-                    .text((i) => i.athlete)
+                    .text((i) => i.athleteName)
                     .attr("fill", (i) => color(i))
-                    .attr("text-anchor", "left")
-                    .style("alignment-baseline", "middle")
-                    .style("font-size", "12px")
+               //     .attr("text-anchor", "left")
+                    .style("alignment-baseline", "middle");
+                 //   .style("font-size", "12px")
 
 
 
@@ -1319,7 +1317,7 @@ By following these steps, you can create a free website that allows users to upl
                             .attr("d", d => line(getPathCoordinates(d.values)))
                             .attr("class", d => {
                                 // Replace spaces with hyphens in the class name
-                                const className = d.athlete.replace(/\s+/g, '-').toLowerCase();
+                                const className = d.athleteName.replace(/\s+/g, '-').toLowerCase();
                                 return className;
                             })
                             .attr("stroke-width", 3)

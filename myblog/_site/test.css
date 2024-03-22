@@ -1,3 +1,4 @@
+@ -1,8 +1,46 @@
 /* class = "label" used on graph */
 * {
     font-family: 'Courier New';
@@ -9,6 +10,7 @@
   font-family: 'Courier New';
   text-anchor: left;
 }
+
 
 h1, h2, h3  {
     text-align: center;
