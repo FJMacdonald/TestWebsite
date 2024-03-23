@@ -1143,8 +1143,6 @@ By following these steps, you can create a free website that allows users to upl
                 .attr("stroke-width", 2)
                 .attr("fill", "transparent");
 
-            //     updateChart(selectedAthletes);
-            // function updateChart(selection) {
                 //clear previous graph
                 d3.select('spider_svg').selectAll('.athlete-group').remove();
                 // Create a group for all athletes
@@ -1231,7 +1229,6 @@ By following these steps, you can create a free website that allows users to upl
                             .attr("y", d => d.label_coord.y)
                             .attr("class", "label")
                             .text(d => d.name)
-                          //  .style("font-size", "14px")
                     )
                     .attr("transform",
                         "translate(-10, 5)");
@@ -1325,9 +1322,8 @@ By following these steps, you can create a free website that allows users to upl
                     })
                     .text((i) => i.athleteName)
                     .attr("fill", (i) => color(i))
-               //     .attr("text-anchor", "left")
                     .style("alignment-baseline", "middle");
-                 //   .style("font-size", "12px")
+
 
 
 
