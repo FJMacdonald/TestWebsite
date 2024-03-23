@@ -46,3 +46,7 @@ body {
     width: 400px;
     margin-left: 20px;
   }
+
+#hit_counter {
+    font-size: 6px;
+}
