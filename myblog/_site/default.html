@@ -40,25 +40,33 @@ By following these steps, you can create a free website that allows users to upl
 </head>
 
 <body>
-    <h4>Instructions:</h4>
-    <ul>
-        <li>Get results file from https://triathlon.org/results</li>
-        <li>Download the XLS file, open it and save it as a CSV file.</li>
-        <li>Open the CSV file here.</li>
-    </ul>
-    </p>
-    <!-- Initialize the file select button -->
-    <div>
-        <input class="button" type="file" id="csvFileInput" accept=".csv"><label for="fileSelect">Select a File:</label>
-        <select id="fileSelect">
-            <option value="" disabled selected>Select a file</option>
-        </select><button class="info-button" onclick="openPopup()"></button>
-    </div>
 
-    <div id="popup" class="popup">
-        <h2>Problems with CSV Data</h2>
-        <div id="chart_problems"></div>
-        <button onclick="closePopup()">Close</button>
+
+<br>
+    <label for="fileSelect">Select a Race:</label>
+    <div class="button-group">
+        
+       
+
+       <!-- Load race stored locally -->    
+       <input class="button" type="file" id="csvFileInput" accept=".csv">
+  
+
+
+        <div id="fileButtons" class="file-buttons">
+            <!-- Back button -->
+            <button class="back-button">&#9664;</button>
+            <!-- Other buttons will be dynamically added here -->
+        </div>
+        <div id="popup" class="popup">
+            <h2>Problems with CSV Data</h2>
+            <div id="chart_problems"></div>
+            <button onclick="closePopup()">Close</button>
+        </div>
+    <div class="button-container">
+
+        <button class="info-button" onclick="openPopup()"></button>
+    
     </div>
 
     <!-- Initialize the reset button -->
@@ -88,44 +96,169 @@ By following these steps, you can create a free website that allows users to upl
             var popup = document.getElementById("popup");
             popup.style.display = "none";
         }
+
+        // Add event listener to the load file button
+        const csvFileButton = document.getElementById('csvFileInput');
+        csvFileButton.addEventListener('click', function() {
+
+            const fileInput = document.getElementById('csvFileInput');
+            fileInput.addEventListener('change', handleFileUpload);
+
+        });
+
         // List of filenames (replace with your filenames)
         const filenames = [
             "Results for Elite Women - 2023 Americas Triathlon Cup St. Peters Missouri.csv",
+            "Results for Elite Men - 2023 Americas Triathlon Cup St. Peters Missouri.csv",
             "Results for Elite Women - 2024 Americas Triathlon Championships Miami.csv",
+            "Results for Elite Men - 2024 Americas Triathlon Championships Miami.csv",
+            "Results for Junior Women - 2024 Americas Triathlon Championships Miami.csv",
+            "Results for Junior Men - 2024 Americas Triathlon Championships Miami.csv",
             "Results for Junior Women - 2023 Americas Triathlon North American Junior Championships Sarasota.csv",
+            "Results for Junior Men - 2023 Americas Triathlon North American Junior Championships Sarasota.csv",
+            "Results for Elite Women - 2023 Americas Triathlon North American Junior Championships Sarasota.csv",
+            "Results for Elite Men - 2023 Americas Triathlon North American Junior Championships Sarasota.csv",
             "Results for Junior Women - 2023 World Triathlon Sprint & Relay Championships Hamburg.csv",
+            "Results for Junior Men - 2023 World Triathlon Sprint & Relay Championships Hamburg.csv",
+            "Results for Elite Women - 2023 World Triathlon Sprint & Relay Championships Hamburg.csv",
+            "Results for Elite Men - 2023 World Triathlon Sprint & Relay Championships Hamburg.csv",
         ];
 
-        // Populate the dropdown menu with filenames
-        const fileSelect = document.getElementById('fileSelect');
+        // document.addEventListener("DOMContentLoaded", function() {
+        //     const fileButtonsContainer = document.getElementById("fileButtons");
+
+        //     filenames.forEach(filename => {
+        //         const button = document.createElement("button");
+        //         button.textContent = filename;
+        //         button.classList.add("file-button");
+        //         button.addEventListener("click", function() {
+        //             handleFile(filename);
+        //         });
+        //         fileButtonsContainer.appendChild(button);
+        //     });
+        // });
+
+        // Group filenames by year
+        const years = {};
         filenames.forEach(filename => {
-            const option = document.createElement('option');
-            option.text = filename;
-            option.value = filename;
-            fileSelect.appendChild(option);
+            const year = filename.match(/\d{4}/)[0];
+            if (!years[year]) {
+                years[year] = {};
+            }
+            const race = filename.split(" - ")[1].split(" - ")[0];
+            if (!years[year][race]) {
+                years[year][race] = [];
+            }
+            years[year][race].push(filename);
         });
 
+        // Create buttons for each year
+        const fileButtonsDiv = document.getElementById("fileButtons");
+        let currentYear = null;
+        let currentRace = null;
+
+        function createYearButtons() {
+            fileButtonsDiv.innerHTML = ""; // Clear previous buttons
+            Object.keys(years).forEach(year => {
+                const yearButton = document.createElement("button");
+                yearButton.textContent = year;
+                yearButton.addEventListener("click", () => {
+                    currentYear = year;
+                    createRaceButtons(years[year]);
+                });
+                fileButtonsDiv.appendChild(yearButton);
+            });
+        }
+
+        function createRaceButtons(races) {
+            fileButtonsDiv.innerHTML = ""; // Clear previous buttons
+            const backButton = document.createElement("button");
+            backButton.textContent = "Back";
+            backButton.addEventListener("click", () => {
+                currentYear = null;
+                createYearButtons();
+            });
+            fileButtonsDiv.appendChild(backButton);
+            Object.keys(races).forEach(race => {
+                const raceButton = document.createElement("button");
+                raceButton.textContent = race.replace(".csv", "");
+                //raceButton.textContent = race;
+                raceButton.addEventListener("click", () => {
+                    currentRace = race;
+                    createFilenameButtons(races[race], " - " + raceButton.textContent);
+                });
+                fileButtonsDiv.appendChild(raceButton);
+            });
+        }
+
+        function createFilenameButtons(filenames, race) {
+            fileButtonsDiv.innerHTML = ""; // Clear previous buttons
+            const backButton = document.createElement("button");
+            backButton.textContent = "Back";
+            backButton.addEventListener("click", () => {
+                currentRace = null;
+                createRaceButtons(years[currentYear]);
+            });
+            fileButtonsDiv.appendChild(backButton);
+            filenames.forEach(filename => {
+                const filenameButton = document.createElement("button");
+                console.log(race);
+                filenameButton.textContent = filename.replace(".csv", "").replace("Results for ", "").replace(race, "");
+                filenameButton.addEventListener("click", () => {
+                    // Handle file selection here
+                    console.log("Selected file:", filename);
+                    // Construct the URL for the selected file
+                    const fileURL = '/results/' + filename;
+                    // Fetch the file
+                    fetch(fileURL)
+                        .then(response => response.text())
+                        .then(data => {
+                            // Process the data here
+                            console.log("File content:", data);
+                            // Call the function to handle file upload
+                            handleFileUpload(data);
+                        })
+                        .catch(error => console.error("Error fetching file:", error));
+                });
+                fileButtonsDiv.appendChild(filenameButton);
+            });
+        }
+
+        // Initial setup
+        createYearButtons();
+
+
+
+        // // Populate the dropdown menu with filenames
+        // const fileSelect = document.getElementById('fileSelect');
+        // filenames.forEach(filename => {
+        //     const option = document.createElement('option');
+        //     option.text = filename;
+        //     option.value = filename;
+        //     fileSelect.appendChild(option);
+        // });
+
         // Add event listener to dropdown menu
-        fileSelect.addEventListener('change', function() {
-            const selectedFilename = fileSelect.value;
-            if (selectedFilename) {
-                // Construct the URL for the selected file
-                const fileURL = '/results/' + selectedFilename;
-                // make a fetch request to get the file content
-                fetch(fileURL)
-                    .then(response => response.text())
-                    .then(data => {
-                        console.log(data);
-                        // Handle the file data, for example, process the CSV content
-                        processData(data, athletesArray, leadersArray);
-                        // draw development chart
-                        drawChart(athletesArray, leadersArray);
-                    })
-                    .catch(error => {
-                        console.error('Error fetching file:', error);
-                    });
-            }
-        });
+        // fileSelect.addEventListener('change', function() {
+        //     const selectedFilename = fileSelect.value;
+        //     if (selectedFilename) {
+        //         // Construct the URL for the selected file
+        //         const fileURL = '/results/' + selectedFilename;
+        //         // make a fetch request to get the file content
+        //         fetch(fileURL)
+        //             .then(response => response.text())
+        //             .then(data => {
+        //                 console.log(data);
+        //                 // Handle the file data, for example, process the CSV content
+        //                 processData(data, athletesArray, leadersArray);
+        //                 // draw development chart
+        //                 drawChart(athletesArray, leadersArray);
+        //             })
+        //             .catch(error => {
+        //                 console.error('Error fetching file:', error);
+        //             });
+        //     }
+        // });
 
 
 
@@ -139,10 +272,7 @@ By following these steps, you can create a free website that allows users to upl
         var max_time_lag = 0;
         var title = "";
 
-        // Add event listener for file input change
-        const fileInput = document.getElementById('csvFileInput');
-        fileInput.addEventListener('change', handleFileUpload);
-
+        
         // Add event listener for reset chart button
         const reset = document.getElementById('resetButton');
         reset.addEventListener('change', drawChart(athletesArray, leadersArray));
@@ -162,27 +292,46 @@ By following these steps, you can create a free website that allows users to upl
             leadersArray.length = 0
             max_time_lag = 0;
 
-            const file = event.target.files[0]; // Get the uploaded file
-            title = file["name"].replace(/Results for |.csv/g, "");
-            // Get the div element by its ID
-            let chartTitleDiv = document.getElementById("chart_title");
+            // const file = event.target.files[0]; // Get the uploaded file
+            // title = file["name"].replace(/Results for |.csv/g, "");
+            // // Get the div element by its ID
+            // let chartTitleDiv = document.getElementById("chart_title");
 
-            // Update the inner HTML of the div with the new title
-            chartTitleDiv.innerHTML = "<h1>" + title + "</h1>";
+            // // Update the inner HTML of the div with the new title
+            // chartTitleDiv.innerHTML = "<h1>" + title + "</h1>";
 
-            // Create a new FileReader object
-            const reader = new FileReader();
-            // Define the onload event handler for the FileReader
-            reader.onload = function (e) {
-                const csvData = e.target.result; // Get the CSV data
-                //   displayCSVData(csvData); // Call function to display CSV data
-                processData(csvData, athletesArray, leadersArray);
+            // // Create a new FileReader object
+            // const reader = new FileReader();
+            // // Define the onload event handler for the FileReader
+            // reader.onload = function (e) {
+            //     const csvData = e.target.result; // Get the CSV data
+            //     //   displayCSVData(csvData); // Call function to display CSV data
+            //     processData(csvData, athletesArray, leadersArray);
 
+            //     drawChart(athletesArray, leadersArray);
+            // };
+
+            // // Read the uploaded file as text
+            // reader.readAsText(file);
+            // Check if the event object contains the file information
+            if (event.target) {
+                const file = event.target.files[0]; // Get the uploaded file
+                title = file["name"].replace(/Results for |.csv/g, "");
+                // Create a new FileReader object
+                const reader = new FileReader();
+                // Define the onload event handler for the FileReader
+                reader.onload = function (e) {
+                    const csvData = e.target.result; // Get the CSV data
+                    processData(csvData, athletesArray, leadersArray);
+                    drawChart(athletesArray, leadersArray);
+                };
+                // Read the uploaded file as text
+                reader.readAsText(file);
+            } else {
+                // If event does not contain file information, assume it's the file content
+                processData(event, athletesArray, leadersArray);
                 drawChart(athletesArray, leadersArray);
-            };
-
-            // Read the uploaded file as text
-            reader.readAsText(file);
+            }
         }
 
         // Function to display CSV data
