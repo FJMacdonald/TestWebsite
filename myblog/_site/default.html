@@ -100,7 +100,7 @@ By following these steps, you can create a free website that allows users to upl
         // Add event listener to the load file button
         const csvFileButton = document.getElementById('csvFileInput');
         csvFileButton.addEventListener('click', function() {
-
+            alert("To prepare World Triathlon file.\n\nGet results file from https://triathlon.org/results.\nDownload the XLS file, open it and save it as a CSV file.");
             const fileInput = document.getElementById('csvFileInput');
             fileInput.addEventListener('change', handleFileUpload);
 
@@ -123,20 +123,6 @@ By following these steps, you can create a free website that allows users to upl
             "Results for Elite Women - 2023 World Triathlon Sprint & Relay Championships Hamburg.csv",
             "Results for Elite Men - 2023 World Triathlon Sprint & Relay Championships Hamburg.csv",
         ];
-
-        // document.addEventListener("DOMContentLoaded", function() {
-        //     const fileButtonsContainer = document.getElementById("fileButtons");
-
-        //     filenames.forEach(filename => {
-        //         const button = document.createElement("button");
-        //         button.textContent = filename;
-        //         button.classList.add("file-button");
-        //         button.addEventListener("click", function() {
-        //             handleFile(filename);
-        //         });
-        //         fileButtonsContainer.appendChild(button);
-        //     });
-        // });
 
         // Group filenames by year
         const years = {};
@@ -228,40 +214,6 @@ By following these steps, you can create a free website that allows users to upl
         createYearButtons();
 
 
-
-        // // Populate the dropdown menu with filenames
-        // const fileSelect = document.getElementById('fileSelect');
-        // filenames.forEach(filename => {
-        //     const option = document.createElement('option');
-        //     option.text = filename;
-        //     option.value = filename;
-        //     fileSelect.appendChild(option);
-        // });
-
-        // Add event listener to dropdown menu
-        // fileSelect.addEventListener('change', function() {
-        //     const selectedFilename = fileSelect.value;
-        //     if (selectedFilename) {
-        //         // Construct the URL for the selected file
-        //         const fileURL = '/results/' + selectedFilename;
-        //         // make a fetch request to get the file content
-        //         fetch(fileURL)
-        //             .then(response => response.text())
-        //             .then(data => {
-        //                 console.log(data);
-        //                 // Handle the file data, for example, process the CSV content
-        //                 processData(data, athletesArray, leadersArray);
-        //                 // draw development chart
-        //                 drawChart(athletesArray, leadersArray);
-        //             })
-        //             .catch(error => {
-        //                 console.error('Error fetching file:', error);
-        //             });
-        //     }
-        // });
-
-
-
         
         const errorResult = 99999;
         const athletesArray = [];
@@ -292,29 +244,8 @@ By following these steps, you can create a free website that allows users to upl
             leadersArray.length = 0
             max_time_lag = 0;
 
-            // const file = event.target.files[0]; // Get the uploaded file
-            // title = file["name"].replace(/Results for |.csv/g, "");
-            // // Get the div element by its ID
-            // let chartTitleDiv = document.getElementById("chart_title");
-
-            // // Update the inner HTML of the div with the new title
-            // chartTitleDiv.innerHTML = "<h1>" + title + "</h1>";
-
-            // // Create a new FileReader object
-            // const reader = new FileReader();
-            // // Define the onload event handler for the FileReader
-            // reader.onload = function (e) {
-            //     const csvData = e.target.result; // Get the CSV data
-            //     //   displayCSVData(csvData); // Call function to display CSV data
-            //     processData(csvData, athletesArray, leadersArray);
-
-            //     drawChart(athletesArray, leadersArray);
-            // };
-
-            // // Read the uploaded file as text
-            // reader.readAsText(file);
-            // Check if the event object contains the file information
             if (event.target) {
+   
                 const file = event.target.files[0]; // Get the uploaded file
                 title = file["name"].replace(/Results for |.csv/g, "");
                 // Create a new FileReader object
