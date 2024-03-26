@@ -47,20 +47,25 @@ By following these steps, you can create a free website that allows users to upl
         <li>Open the CSV file here.</li>
     </ul>
     </p>
-    <!-- Initialize the ffile select button -->
-    <input class="button" type="file" id="csvFileInput" accept=".csv">
-    <!-- <div id="csvData"></div> -->
-    <label for="fileSelect">Select a File:</label>
-    <select id="fileSelect">
-        <option value="" disabled selected>Select a file</option>
-    </select>
+    <!-- Initialize the file select button -->
+    <div>
+        <input class="button" type="file" id="csvFileInput" accept=".csv"><label for="fileSelect">Select a File:</label>
+        <select id="fileSelect">
+            <option value="" disabled selected>Select a file</option>
+        </select><button class="info-button" onclick="openPopup()"></button>
+    </div>
+
+    <div id="popup" class="popup">
+        <h2>Problems with CSV Data</h2>
+        <div id="chart_problems"></div>
+        <button onclick="closePopup()">Close</button>
+    </div>
 
     <!-- Initialize the reset button -->
     <button class="button" id="resetButton" style="margin-bottom: 10px">Reset</button>
 
     <!-- Create a div where the graph will take place -->
     <div>
-        <div id="chart_problems"></div>
         <div id="chart_title"></div>
         <div id="development_chart"></div>
         <div id="spiderchart_title"></div>
@@ -74,6 +79,15 @@ By following these steps, you can create a free website that allows users to upl
     <script src="/js/developmentChart.js"></script>
     <script src="/js/spiderChart.js"></script>
     <script>
+        function openPopup() {
+            var popup = document.getElementById("popup");
+            popup.style.display = "block";
+        }
+
+        function closePopup() {
+            var popup = document.getElementById("popup");
+            popup.style.display = "none";
+        }
         // List of filenames (replace with your filenames)
         const filenames = [
             "Results for Elite Women - 2023 Americas Triathlon Cup St. Peters Missouri.csv",
@@ -330,8 +344,12 @@ By following these steps, you can create a free website that allows users to upl
             normalizeResults(fastestSplits, slowestSplits);
 
             if (problemIndexArray.length > 0) {
+                // Show the button
+                var infoButton = document.querySelector('.info-button');
+                infoButton.style.display = 'inline-block'; 
+
                 let chartTitleDiv = document.getElementById("chart_problems");
-                var problemString = "There were issues with " + problemIndexArray.length + " athlete results:<ul>"
+                var problemString = "There were issues with the following " + problemIndexArray.length + " athlete results:<ul>"
                 var problems = 0;
                 for (let i = 0; i < problemIndexArray.length; i++) {
                     if (athletesArray[problemIndexArray[i]].status == "") {
