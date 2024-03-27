@@ -84,7 +84,9 @@ function drawChart(athletesArray, leadersArray) {
     //                 return '#' + color.slice(1).match(/.{2}/g).map(channel => Math.floor(parseInt(channel, 16) * factor).toString(16).padStart(2, '0')).join('');
     //             }
 
-
+    const resetButton = document.getElementById('resetButton');
+    resetButton.style.display = 'block';
+    reset.addEventListener('change', drawChart(athletesArray, leadersArray));
 
     // Add a click event listener to the reset button
     document.getElementById("resetButton").addEventListener("click", resetChart);

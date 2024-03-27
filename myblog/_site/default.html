@@ -42,43 +42,40 @@ By following these steps, you can create a free website that allows users to upl
 <body>
 
 
-<br>
     <label for="fileSelect">Select a Race:</label>
     <div class="button-group">
+            
         
-       
 
-       <!-- Load race stored locally -->    
-       <input class="button" type="file" id="csvFileInput" accept=".csv">
-  
+        <!-- Load race stored locally -->    
+        <input class="button" type="file" id="csvFileInput" accept=".csv">
+
 
 
         <div id="fileButtons" class="file-buttons">
             <!-- Back button -->
             <button class="back-button">&#9664;</button>
-            <!-- Other buttons will be dynamically added here -->
-        </div>
-        <div id="popup" class="popup">
-            <h2>Problems with CSV Data</h2>
-            <div id="chart_problems"></div>
-            <button onclick="closePopup()">Close</button>
-        </div>
-    <div class="button-container">
 
-        <button class="info-button" onclick="openPopup()"></button>
-    
+            <div id="popup" class="popup">
+                <h2>Problems with CSV Data</h2>
+                <div id="chart_problems"></div>
+                <button onclick="closePopup()">Close</button>
+            </div>
+            <div class="button-container">
+                <button class="info-button" onclick="openPopup()"></button>
+            </div>
+        </div>
     </div>
-
-    <!-- Initialize the reset button -->
-    <button class="button" id="resetButton" style="margin-bottom: 10px">Reset</button>
 
     <!-- Create a div where the graph will take place -->
     <div>
         <div id="chart_title"></div>
+        <!-- Initialize the reset button -->
+        <button class="button" id="resetButton" style="margin-bottom: 10px; display: none">Reset</button>  
         <div id="development_chart"></div>
         <div id="spiderchart_title"></div>
         <div id="spider_chart" style="width: 100%;"></div>
-        <div id="hit_counter"><span id="hitCount">0</span></div>
+        <div id="hitCounter"></div>
     </div>
     <script src="https://d3js.org/d3-color.v1.min.js"> </script>
     <script src="https://d3js.org/d3-interpolate.v1.min.js"> </script>
@@ -87,6 +84,8 @@ By following these steps, you can create a free website that allows users to upl
     <script src="/js/developmentChart.js"></script>
     <script src="/js/spiderChart.js"></script>
     <script>
+
+    document.addEventListener('DOMContentLoaded', function() {
         function openPopup() {
             var popup = document.getElementById("popup");
             popup.style.display = "block";
@@ -188,11 +187,9 @@ By following these steps, you can create a free website that allows users to upl
             fileButtonsDiv.appendChild(backButton);
             filenames.forEach(filename => {
                 const filenameButton = document.createElement("button");
-                console.log(race);
                 filenameButton.textContent = filename.replace(".csv", "").replace("Results for ", "").replace(race, "");
                 filenameButton.addEventListener("click", () => {
                     // Handle file selection here
-                    console.log("Selected file:", filename);
                     // Construct the URL for the selected file
                     const fileURL = '/results/' + filename;
                     // Fetch the file
@@ -200,7 +197,6 @@ By following these steps, you can create a free website that allows users to upl
                         .then(response => response.text())
                         .then(data => {
                             // Process the data here
-                            console.log("File content:", data);
                             // Call the function to handle file upload
                             handleFileUpload(data);
                         })
@@ -225,9 +221,7 @@ By following these steps, you can create a free website that allows users to upl
         var title = "";
 
         
-        // Add event listener for reset chart button
-        const reset = document.getElementById('resetButton');
-        reset.addEventListener('change', drawChart(athletesArray, leadersArray));
+
 
         // Function to handle file upload
         function handleFileUpload(event) {
@@ -236,6 +230,7 @@ By following these steps, you can create a free website that allows users to upl
             svg.selectAll('*').remove();
             // clear previous problem data sets
             let chartProblemDiv = document.getElementById("chart_problems");
+            console.log(chartProblemDiv);
             chartProblemDiv.innerHTML = "";
             chartProblemDiv.style.border = "none";
 
@@ -245,19 +240,16 @@ By following these steps, you can create a free website that allows users to upl
             max_time_lag = 0;
 
             if (event.target) {
-   
                 const file = event.target.files[0]; // Get the uploaded file
-                title = file["name"].replace(/Results for |.csv/g, "");
-                // Create a new FileReader object
-                const reader = new FileReader();
-                // Define the onload event handler for the FileReader
+                title = file.name.replace(/Results for |.csv/g, ""); // Extract title from filename
+                const reader = new FileReader(); // Create a new FileReader object
                 reader.onload = function (e) {
                     const csvData = e.target.result; // Get the CSV data
                     processData(csvData, athletesArray, leadersArray);
                     drawChart(athletesArray, leadersArray);
                 };
                 // Read the uploaded file as text
-                reader.readAsText(file);
+                reader.readAsText(file);  
             } else {
                 // If event does not contain file information, assume it's the file content
                 processData(event, athletesArray, leadersArray);
@@ -428,7 +420,7 @@ By following these steps, you can create a free website that allows users to upl
                 var infoButton = document.querySelector('.info-button');
                 infoButton.style.display = 'inline-block'; 
 
-                let chartTitleDiv = document.getElementById("chart_problems");
+
                 var problemString = "There were issues with the following " + problemIndexArray.length + " athlete results:<ul>"
                 var problems = 0;
                 for (let i = 0; i < problemIndexArray.length; i++) {
@@ -439,12 +431,14 @@ By following these steps, you can create a free website that allows users to upl
                     }
                 }
                 if (problems > 0) {
-
                     problemString += "</ul>"
-                    // Update the inner HTML of the div with the new title
-                    chartTitleDiv.innerHTML = problemString;
-                    // Add a red border to the chartTitleDiv
-                    chartTitleDiv.style = "border: 1px solid red; border-radius: 5px;";
+
+                    let chartProblemDiv = document.getElementById("chart_problems");
+                    console.log("chartProblemDiv", chartProblemDiv);
+                    Div.innerHTML = problemString;
+                    chartProblemDiv.style = "border: 1px solid red; border-radius: 5px;";
+
+
                 }
             }
         }
@@ -507,22 +501,27 @@ By following these steps, you can create a free website that allows users to upl
 
 
 
+ 
+            // Function to retrieve the current hit count from localStorage
+            function getHitCount() {
+                return localStorage.getItem('hitCount') || '0';
+            }
 
+            // Function to update the hit count and display it on the page
+            function updateHitCount() {
+                var hitCount = parseInt(getHitCount()) + 1;
+                localStorage.setItem('hitCount', hitCount);
+                console.log(hitCount);
+                const counter = document.getElementById("hitCounter");
+                const other = document.getElementById("chart_title");
+                console.log(other);
+                console.log(counter);
+                counter.innerHTML = hitCount;
+            }
 
-        // Function to retrieve the current hit count from localStorage
-        function getHitCount() {
-            return localStorage.getItem('hitCount') || '0';
-        }
-
-        // Function to update the hit count and display it on the page
-        function updateHitCount() {
-            var hitCount = parseInt(getHitCount()) + 1;
-            localStorage.setItem('hitCount', hitCount);
-            document.getElementById('hitCount').textContent = hitCount;
-        }
-
-        // Call the updateHitCount function to increment the hit count
-        updateHitCount();
+            // Call the updateHitCount function to increment the hit count
+            updateHitCount();
+        });
 
     </script>
 </body>
