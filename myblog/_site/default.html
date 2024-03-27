@@ -44,26 +44,11 @@ By following these steps, you can create a free website that allows users to upl
 
     <label for="fileSelect">Select a Race:</label>
     <div class="button-group">
-            
-        
-
         <!-- Load race stored locally -->    
         <input class="button" type="file" id="csvFileInput" accept=".csv">
-
-
-
         <div id="fileButtons" class="file-buttons">
             <!-- Back button -->
             <button class="back-button">&#9664;</button>
-
-            <!-- <div id="popup" class="popup">
-                <h2>Problems with CSV Data</h2>
-                <div id="chart_problems"></div>
-                <button onclick="closePopup()">Close</button>
-            </div> -->
-            <!-- <div class="button-container"> -->
-                <!-- <button id="info-button" onclick="openPopup()"></button> -->
-            <!-- </div> -->
         </div>
     </div>
 
@@ -72,6 +57,10 @@ By following these steps, you can create a free website that allows users to upl
         <button id="close-popup" class="popup-close" onclick="closeIssuePopup()">Close</button>
         <div id="issueString"></div>
     </div>
+
+    <!-- Create some seperation -->
+    <br>
+    <hr>
 
     <!-- Create a div where the graph will take place -->
     <div>
@@ -82,14 +71,13 @@ By following these steps, you can create a free website that allows users to upl
         
         <!-- Issue button -->
         <button id="issueButton" class="button" style="display: none;" onclick="showPopup()">Report Issue</button>
-
-        <!-- Initialize the reset button -->
-        <!-- <button class="button" id="resetButton" style="margin-bottom: 10px; display: none">Reset</button>   -->
         
         <div id="development_chart"></div>
         <div id="spiderchart_title"></div>
         <div id="spider_chart" style="width: 100%;"></div>
-        <div id="hitCounter"></div>
+        <footer>
+            <div id="hitCounter" style="font-size: 6px"></div>
+        </footer>
     </div>
     <script src="https://d3js.org/d3-color.v1.min.js"> </script>
     <script src="https://d3js.org/d3-interpolate.v1.min.js"> </script>
@@ -110,10 +98,7 @@ By following these steps, you can create a free website that allows users to upl
             popup.style.display = "none";
         }
         
-        function closeIssuePopup() {
-            console.log("in close 1")
-            document.getElementById('issuePopup').style.display = 'none';
-        }
+
 
 
         // Add event listener to the load file button
@@ -159,6 +144,46 @@ By following these steps, you can create a free website that allows users to upl
 
         // Create buttons for each year
         const fileButtonsDiv = document.getElementById("fileButtons");
+      //  fileButtonsDiv.style = "display: flex; align-items: center;";
+        fileButtonsDiv.style.display = "flex";
+        fileButtonsDiv.style.alignItems = "flex-start";
+        fileButtonsDiv.style.flexDirection = "column";
+
+        function styleButtons(){
+            // Select all buttons inside fileButtonsDiv
+            const buttons = fileButtonsDiv.querySelectorAll("button");
+
+            // Add margin to each button
+            buttons.forEach(button => {
+                console.log("styling", button);
+                button.style.margin = "5px"; // Adjust the margin as needed
+                button.style.padding = "10px 20px"; // Adjust padding as needed
+                button.style.border = "1px solid #ccc"; // Add border
+                button.style.borderRadius = "5px"; // Add border radius
+                button.style.backgroundColor = "#3891d9";//#f0f0f0"; // Add background color
+                button.style.fontSize = "14px"; // Adjust font size as needed
+                button.style.cursor = "pointer"; // Add cursor pointer
+                button.style.color = "white";
+                button.style.display = "inline-block";
+                button.style.boxShadow = "20px";
+                // button.style.text-align = "center";
+                // button.style.text-decoration = "none";
+
+                button.style.transition  = "background-color 0.3s";
+                  // Add event listeners for hover effect
+                button.addEventListener("mouseenter", function() {
+                    // Change background color on hover
+                    button.style.backgroundColor = "#1b72a5"; 
+                });
+
+                button.addEventListener("mouseleave", function() {
+                    // Restore background color when not hovered
+                    button.style.backgroundColor = "#3891d9"; // Restore to original color
+                });
+
+            });
+        }
+
         let currentYear = null;
         let currentRace = null;
 
@@ -173,6 +198,7 @@ By following these steps, you can create a free website that allows users to upl
                 });
                 fileButtonsDiv.appendChild(yearButton);
             });
+            styleButtons();
         }
 
         function createRaceButtons(races) {
@@ -194,6 +220,7 @@ By following these steps, you can create a free website that allows users to upl
                 });
                 fileButtonsDiv.appendChild(raceButton);
             });
+            styleButtons();
         }
 
         function createFilenameButtons(filenames, race) {
@@ -224,6 +251,7 @@ By following these steps, you can create a free website that allows users to upl
                 });
                 fileButtonsDiv.appendChild(filenameButton);
             });
+            styleButtons();
         }
 
         // Initial setup
@@ -438,12 +466,6 @@ By following these steps, you can create a free website that allows users to upl
             normalizeResults(fastestSplits, slowestSplits);
 
             if (problemIndexArray.length > 0) {
-                // Show the button
-               // var infoButton = document.querySelector('.info-button');
-                // var infoButton = document.getElementById('info-button');
-                // console.log("info-button", infoButton);
-                // infoButton.style.display = 'inline-block'; 
-
 
                 problemString = "There were issues with the following " + problemIndexArray.length + " athlete results:<ul>"
 
@@ -528,9 +550,9 @@ By following these steps, you can create a free website that allows users to upl
                 console.log(hitCount);
                 const counter = document.getElementById("hitCounter");
                 const other = document.getElementById("chart_title");
-                console.log(other);
-                console.log(counter);
                 counter.innerHTML = hitCount;
+                counter.style = "font-size: 8px";
+                counter.style.color = "#F5F5F5";
             }
 
             // Call the updateHitCount function to increment the hit count
