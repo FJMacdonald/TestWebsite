@@ -56,22 +56,37 @@ By following these steps, you can create a free website that allows users to upl
             <!-- Back button -->
             <button class="back-button">&#9664;</button>
 
-            <div id="popup" class="popup">
+            <!-- <div id="popup" class="popup">
                 <h2>Problems with CSV Data</h2>
                 <div id="chart_problems"></div>
                 <button onclick="closePopup()">Close</button>
-            </div>
-            <div class="button-container">
-                <button class="info-button" onclick="openPopup()"></button>
-            </div>
+            </div> -->
+            <!-- <div class="button-container"> -->
+                <!-- <button id="info-button" onclick="openPopup()"></button> -->
+            <!-- </div> -->
         </div>
+    </div>
+
+    <!-- HTML markup for the popup -->
+    <div id="issuePopup" class="popup">
+        <span class="popup-close" onclick="closePopup()">X</span>
+        <h2>Issue Details</h2>
+        <p>Description of the issue goes here...</p>
     </div>
 
     <!-- Create a div where the graph will take place -->
     <div>
         <div id="chart_title"></div>
+        
+        <!-- Reset button -->
+        <button id="resetButton" class="button" style="display: none;">Reset</button>
+        
+        <!-- Issue button -->
+        <button id="issueButton" class="button" style="display: none;">Report Issue</button>
+
         <!-- Initialize the reset button -->
-        <button class="button" id="resetButton" style="margin-bottom: 10px; display: none">Reset</button>  
+        <!-- <button class="button" id="resetButton" style="margin-bottom: 10px; display: none">Reset</button>   -->
+        
         <div id="development_chart"></div>
         <div id="spiderchart_title"></div>
         <div id="spider_chart" style="width: 100%;"></div>
@@ -94,6 +109,14 @@ By following these steps, you can create a free website that allows users to upl
         function closePopup() {
             var popup = document.getElementById("popup");
             popup.style.display = "none";
+        }
+        function showPopup() {
+            document.getElementById('issuePopup').style.display = 'block';
+        }
+
+        // JavaScript function to close the popup
+        function closePopup() {
+            document.getElementById('issuePopup').style.display = 'none';
         }
 
         // Add event listener to the load file button
@@ -216,6 +239,7 @@ By following these steps, you can create a free website that allows users to upl
         const leadersArray = [];
         const spiderChartArray = [];
         var athleteIndexArray = [];
+        var problemString = ""; //used incase problems with resuts file
 
         var max_time_lag = 0;
         var title = "";
@@ -228,11 +252,12 @@ By following these steps, you can create a free website that allows users to upl
             // clear any previous chart
             var svg = d3.select("#development_chart")
             svg.selectAll('*').remove();
+            problemString = "";
             // clear previous problem data sets
-            let chartProblemDiv = document.getElementById("chart_problems");
-            console.log(chartProblemDiv);
-            chartProblemDiv.innerHTML = "";
-            chartProblemDiv.style.border = "none";
+            // let chartProblemDiv = document.getElementById("chart_problems");
+            // console.log(chartProblemDiv);
+            // chartProblemDiv.innerHTML = "";
+            // chartProblemDiv.style.border = "none";
 
             //reset the data arrays
             athletesArray.length = 0
@@ -246,14 +271,14 @@ By following these steps, you can create a free website that allows users to upl
                 reader.onload = function (e) {
                     const csvData = e.target.result; // Get the CSV data
                     processData(csvData, athletesArray, leadersArray);
-                    drawChart(athletesArray, leadersArray);
+                    drawChart(athletesArray, leadersArray, max_time_lag, problemString);
                 };
                 // Read the uploaded file as text
                 reader.readAsText(file);  
             } else {
                 // If event does not contain file information, assume it's the file content
                 processData(event, athletesArray, leadersArray);
-                drawChart(athletesArray, leadersArray);
+                drawChart(athletesArray, leadersArray, max_time_lag, problemString);
             }
         }
 
@@ -417,29 +442,21 @@ By following these steps, you can create a free website that allows users to upl
 
             if (problemIndexArray.length > 0) {
                 // Show the button
-                var infoButton = document.querySelector('.info-button');
-                infoButton.style.display = 'inline-block'; 
+               // var infoButton = document.querySelector('.info-button');
+                // var infoButton = document.getElementById('info-button');
+                // console.log("info-button", infoButton);
+                // infoButton.style.display = 'inline-block'; 
 
 
-                var problemString = "There were issues with the following " + problemIndexArray.length + " athlete results:<ul>"
-                var problems = 0;
+                problemString = "There were issues with the following " + problemIndexArray.length + " athlete results:<ul>"
+
                 for (let i = 0; i < problemIndexArray.length; i++) {
                     if (athletesArray[problemIndexArray[i]].status == "") {
                         problemString += "<li>" + athletesArray[problemIndexArray[i]].athleteName + "</li>";
                         athletesArray[problemIndexArray[i]].athleteName += "***";
-                        problems++;
                     }
                 }
-                if (problems > 0) {
-                    problemString += "</ul>"
-
-                    let chartProblemDiv = document.getElementById("chart_problems");
-                    console.log("chartProblemDiv", chartProblemDiv);
-                    Div.innerHTML = problemString;
-                    chartProblemDiv.style = "border: 1px solid red; border-radius: 5px;";
-
-
-                }
+                problemString += "</ul>"
             }
         }
 

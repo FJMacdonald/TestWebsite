@@ -1,8 +1,9 @@
+const errorResult = 99999;
 
 // Draws the chart
-function drawChart(athletesArray, leadersArray) {
+function drawChart(athletesArray, leadersArray, max_time_lag, problemString) {
 
-
+        const errorResult = 99999;
 
     if (athletesArray.length == 0) {
         return
@@ -84,12 +85,11 @@ function drawChart(athletesArray, leadersArray) {
     //                 return '#' + color.slice(1).match(/.{2}/g).map(channel => Math.floor(parseInt(channel, 16) * factor).toString(16).padStart(2, '0')).join('');
     //             }
 
-    const resetButton = document.getElementById('resetButton');
-    resetButton.style.display = 'block';
-    reset.addEventListener('change', drawChart(athletesArray, leadersArray));
 
-    // Add a click event listener to the reset button
-    document.getElementById("resetButton").addEventListener("click", resetChart);
+    document.getElementById('resetButton').style.display = 'inline-block';
+    if (problemString.length > 0){
+        document.getElementById('issueButton').style.display = 'inline-block';
+    }
 
     // Function to reset the chart
     function resetChart() {
