@@ -69,9 +69,8 @@ By following these steps, you can create a free website that allows users to upl
 
     <!-- HTML markup for the popup -->
     <div id="issuePopup" class="popup">
-        <span class="popup-close" onclick="closePopup()">X</span>
-        <h2>Issue Details</h2>
-        <p>Description of the issue goes here...</p>
+        <button id="close-popup" class="popup-close" onclick="closeIssuePopup()">Close</button>
+        <div id="issueString"></div>
     </div>
 
     <!-- Create a div where the graph will take place -->
@@ -82,7 +81,7 @@ By following these steps, you can create a free website that allows users to upl
         <button id="resetButton" class="button" style="display: none;">Reset</button>
         
         <!-- Issue button -->
-        <button id="issueButton" class="button" style="display: none;">Report Issue</button>
+        <button id="issueButton" class="button" style="display: none;" onclick="showPopup()">Report Issue</button>
 
         <!-- Initialize the reset button -->
         <!-- <button class="button" id="resetButton" style="margin-bottom: 10px; display: none">Reset</button>   -->
@@ -110,14 +109,12 @@ By following these steps, you can create a free website that allows users to upl
             var popup = document.getElementById("popup");
             popup.style.display = "none";
         }
-        function showPopup() {
-            document.getElementById('issuePopup').style.display = 'block';
-        }
-
-        // JavaScript function to close the popup
-        function closePopup() {
+        
+        function closeIssuePopup() {
+            console.log("in close 1")
             document.getElementById('issuePopup').style.display = 'none';
         }
+
 
         // Add event listener to the load file button
         const csvFileButton = document.getElementById('csvFileInput');

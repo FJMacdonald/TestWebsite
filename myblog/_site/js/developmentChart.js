@@ -3,7 +3,6 @@ const errorResult = 99999;
 // Draws the chart
 function drawChart(athletesArray, leadersArray, max_time_lag, problemString) {
 
-        const errorResult = 99999;
 
     if (athletesArray.length == 0) {
         return
@@ -87,8 +86,26 @@ function drawChart(athletesArray, leadersArray, max_time_lag, problemString) {
 
 
     document.getElementById('resetButton').style.display = 'inline-block';
+    // Add a click event listener to the reset button
+    document.getElementById("resetButton").addEventListener("click", resetChart);
+
     if (problemString.length > 0){
         document.getElementById('issueButton').style.display = 'inline-block';
+        // Add a click event listener to the issues button
+        document.getElementById("issueButton").addEventListener("click", showPopup);
+    }
+    function showPopup() {
+        console.log("in show popup")
+        document.getElementById('issuePopup').style.display = 'block';
+        document.getElementById('issueString').innerHTML = problemString;
+        // Add a click event listener to the issues button
+        document.getElementById("close-popup").addEventListener("click", closeIssuePopup);
+    }
+
+    // JavaScript function to close the popup
+    function closeIssuePopup() {
+        console.log("in close 2")
+        document.getElementById('issuePopup').style.display = 'none';
     }
 
     // Function to reset the chart
