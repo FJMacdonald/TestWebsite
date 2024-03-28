@@ -525,7 +525,7 @@ function drawChart(athletesArray, leadersArray, max_time_lag, problemString) {
                         .attr("r", circleRadius);
                 });
 
-                drawSpiderChart(athleteIndexArray);
+                drawSpiderChart(spiderChartArray, athleteIndexArray);
             });
         //Add athlete first name next to rect
         svg.selectAll(".label-firstname")

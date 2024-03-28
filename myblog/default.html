@@ -1,0 +1,553 @@
+<!-- Set Up Your Website: Create the structure of your website using HTML, CSS, and JavaScript. 
+You'll need an HTML file to create the user interface, a CSS file for styling,
+ and a JavaScript file to handle the file upload and D3.js visualization.
+
+Create the User Interface: 
+Design the user interface where users can upload their CSV files. You can use HTML form elements 
+and styling to create an intuitive and user-friendly interface.
+
+Implement File Upload Functionality: Write JavaScript code to handle the file upload process. 
+Use the File API to allow users to select and upload CSV files from their local device. 
+You'll also need to handle the file upload event and read the contents of the uploaded CSV file.
+
+Parse and Process the CSV Data: Once the CSV file is uploaded, parse its contents using JavaScript. 
+You can use libraries like Papa Parse to parse CSV data easily. Process the data as needed to prepare 
+it for visualization with D3.js.
+
+Visualize the Data with D3.js: Use D3.js to create custom visualizations based on the data from the CSV file. 
+You can create various types of charts, graphs, or other visualizations to present the data in a special way 
+according to your requirements.
+
+Test Your Website: Before deploying your website, thoroughly test it to ensure that the file upload and
+visualization functionalities work correctly across different browsers and devices.
+Deploy Your Website: Once you're satisfied with your website, deploy it to your chosen hosting platform. 
+Follow the instructions provided by the hosting platform to deploy your website for free.
+
+Share Your Website: Share the URL of your website with others so they can upload their CSV files and explore
+ the visualizations you've created with D3.js.
+By following these steps, you can create a free website that allows users to upload CSV files
+ and presents the data in a special way using D3.js for visualization. -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/test.css">
+    <title>CSV File Upload</title>
+</head>
+
+<body>
+
+
+    <label for="fileSelect">Select a Race:</label>
+    <div class="button-group">
+        <!-- Load race stored locally -->    
+        <input class="button" type="file" id="csvFileInput" accept=".csv">
+        <div id="fileButtons" class="file-buttons">
+            <!-- Back button -->
+            <button class="back-button">&#9664;</button>
+        </div>
+    </div>
+
+
+
+
+    <div>
+        <footer>
+            <div id="hitCounter" style="font-size: 6px"></div>
+        </footer>
+    </div>
+    <script src="https://d3js.org/d3-color.v1.min.js"> </script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"> </script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"> </script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="/js/developmentChart.js"></script>
+    <script src="/js/spiderChart.js"></script>
+    <script>
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        var titlename = "";
+
+        function openPopup() {
+            var popup = document.getElementById("popup");
+            popup.style.display = "block";
+        }
+
+        function closePopup() {
+            var popup = document.getElementById("popup");
+            popup.style.display = "none";
+        }
+        
+
+
+
+        // Add event listener to the load file button
+        const csvFileButton = document.getElementById('csvFileInput');
+        csvFileButton.addEventListener('click', function() {
+            alert("To prepare World Triathlon file.\n\nGet results file from https://triathlon.org/results.\nDownload the XLS file, open it and save it as a CSV file.");
+            const fileInput = document.getElementById('csvFileInput');
+            fileInput.addEventListener('change', handleFileUpload);
+
+        });
+
+        // List of filenames (replace with your filenames)
+        const filenames = [
+            "Results for Elite Women - 2023 Americas Triathlon Cup St. Peters Missouri.csv",
+            "Results for Elite Men - 2023 Americas Triathlon Cup St. Peters Missouri.csv",
+            "Results for Elite Women - 2024 Americas Triathlon Championships Miami.csv",
+            "Results for Elite Men - 2024 Americas Triathlon Championships Miami.csv",
+            "Results for Junior Women - 2024 Americas Triathlon Championships Miami.csv",
+            "Results for Junior Men - 2024 Americas Triathlon Championships Miami.csv",
+            "Results for Junior Women - 2023 Americas Triathlon North American Junior Championships Sarasota.csv",
+            "Results for Junior Men - 2023 Americas Triathlon North American Junior Championships Sarasota.csv",
+            "Results for Elite Women - 2023 Americas Triathlon North American Junior Championships Sarasota.csv",
+            "Results for Elite Men - 2023 Americas Triathlon North American Junior Championships Sarasota.csv",
+            "Results for Junior Women - 2023 World Triathlon Sprint & Relay Championships Hamburg.csv",
+            "Results for Junior Men - 2023 World Triathlon Sprint & Relay Championships Hamburg.csv",
+            "Results for Elite Women - 2023 World Triathlon Sprint & Relay Championships Hamburg.csv",
+            "Results for Elite Men - 2023 World Triathlon Sprint & Relay Championships Hamburg.csv",
+        ];
+
+        // Group filenames by year
+        const years = {};
+        filenames.forEach(filename => {
+            const year = filename.match(/\d{4}/)[0];
+            if (!years[year]) {
+                years[year] = {};
+            }
+            const race = filename.split(" - ")[1].split(" - ")[0];
+            if (!years[year][race]) {
+                years[year][race] = [];
+            }
+            years[year][race].push(filename);
+        });
+
+        // Create buttons for each year
+        const fileButtonsDiv = document.getElementById("fileButtons");
+        fileButtonsDiv.style.display = "flex";
+        fileButtonsDiv.style.alignItems = "flex-start";
+        fileButtonsDiv.style.flexDirection = "column";
+
+        function styleButtons(){
+            // Select all buttons inside fileButtonsDiv
+            const buttons = fileButtonsDiv.querySelectorAll("button");
+
+            // Add margin to each button
+            buttons.forEach(button => {
+                button.style.margin = "5px"; // Adjust the margin as needed
+                button.style.padding = "10px 20px"; // Adjust padding as needed
+                button.style.border = "1px solid #ccc"; // Add border
+                button.style.borderRadius = "5px"; // Add border radius
+                button.style.backgroundColor = "#3891d9";//#f0f0f0"; // Add background color
+                button.style.fontSize = "14px"; // Adjust font size as needed
+                button.style.cursor = "pointer"; // Add cursor pointer
+                button.style.color = "white";
+                button.style.display = "inline-block";
+                button.style.boxShadow = "20px";
+                button.style.transition  = "background-color 0.3s";
+
+                // Add event listeners for hover effect
+                button.addEventListener("mouseenter", function() {
+                    // Change background color on hover
+                    button.style.backgroundColor = "#1b72a5"; 
+                });
+
+                button.addEventListener("mouseleave", function() {
+                    // Restore background color when not hovered
+                    button.style.backgroundColor = "#3891d9"; // Restore to original color
+                });
+
+            });
+        }
+
+        let currentYear = null;
+        let currentRace = null;
+
+        function createYearButtons() {
+            fileButtonsDiv.innerHTML = ""; // Clear previous buttons
+            Object.keys(years).forEach(year => {
+                const yearButton = document.createElement("button");
+                yearButton.textContent = year;
+                yearButton.addEventListener("click", () => {
+                    currentYear = year;
+                    createRaceButtons(years[year]);
+                });
+                fileButtonsDiv.appendChild(yearButton);
+            });
+            styleButtons();
+        }
+
+        function createRaceButtons(races) {
+            fileButtonsDiv.innerHTML = ""; // Clear previous buttons
+            const backButton = document.createElement("button");
+            backButton.textContent = "Back";
+            backButton.addEventListener("click", () => {
+                currentYear = null;
+                createYearButtons();
+            });
+            fileButtonsDiv.appendChild(backButton);
+            Object.keys(races).forEach(race => {
+                const raceButton = document.createElement("button");
+                raceButton.textContent = race.replace(".csv", "");
+                //raceButton.textContent = race;
+                raceButton.addEventListener("click", () => {
+                    currentRace = race;
+                    createFilenameButtons(races[race], " - " + raceButton.textContent);
+                });
+                fileButtonsDiv.appendChild(raceButton);
+            });
+            styleButtons();
+        }
+
+        function createFilenameButtons(filenames, race) {
+            fileButtonsDiv.innerHTML = ""; // Clear previous buttons
+            const backButton = document.createElement("button");
+            backButton.textContent = "Back";
+            backButton.addEventListener("click", () => {
+                currentRace = null;
+                createRaceButtons(years[currentYear]);
+            });
+            fileButtonsDiv.appendChild(backButton);
+            filenames.forEach(filename => {
+                const filenameButton = document.createElement("button");
+                filenameButton.textContent = filename.replace(".csv", "").replace("Results for ", "").replace(race, "");
+                filenameButton.addEventListener("click", () => {
+                    // Handle file selection here
+                    // Construct the URL for the selected file
+                    const fileURL = '/results/' + filename;
+                    titlename = filename;
+                    // Fetch the file
+                    fetch(fileURL)
+                        .then(response => response.text())
+                        .then(data => {
+                            // Process the data here
+                            // Call the function to handle file upload
+                            handleFileUpload(data);
+                        })
+                        .catch(error => console.error("Error fetching file:", error));
+                });
+                fileButtonsDiv.appendChild(filenameButton);
+            });
+            styleButtons();
+        }
+
+        // Initial setup
+        createYearButtons();
+
+
+        
+        const athletesArray = [];
+        var athleteIndexArray = [];
+
+
+
+
+        
+
+
+        // Function to handle file upload
+        function handleFileUpload(event) {
+            // clear any previous chart
+            var svg = d3.select("#development_chart")
+            svg.selectAll('*').remove();
+
+            //reset the data arrays
+            athletesArray.length = 0
+
+            if (event.target) {
+                const file = event.target.files[0]; // Get the uploaded file
+                titlename = file.filename;
+                const reader = new FileReader(); // Create a new FileReader object
+                reader.onload = function (e) {
+                    const csvData = e.target.result; // Get the CSV data
+                    processData(csvData, athletesArray);
+                };
+                // Read the uploaded file as text
+                reader.readAsText(file);  
+            } else {
+                // If event does not contain file information, assume it's the file content
+                processData(event, athletesArray);
+            }
+        }
+
+        // Function to display CSV data
+        function displayCSVData(csvData) {
+            const csvDataDiv = document.getElementById('csvData'); // Get the div element
+            csvDataDiv.textContent = csvData; // Display the CSV data in the div
+        }
+
+        // Function converts time String formated as hr:min:sec to an int of seconds
+        function convertToSeconds(timeString) {
+            // Split the time string into hours, minutes, and seconds
+            const [hours, minutes, seconds] = timeString.split(':').map(Number);
+            // Convert hours, minutes, and seconds to seconds
+            const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+            return totalSeconds;
+        }
+
+        // Function to process csv data into arrays used by drawChart
+        function processData(csvData, athletesArray) {
+            var leadersArray = [];
+            const lines = csvData.split('\n');
+            const headers = lines[0].split(',');
+
+            const results = [];
+            //process csv file into a results array
+            for (let i = 1; i < lines.length; i++) {
+                const obj = {};
+                const currentline = lines[i].split(',');
+                headers.forEach((header, index) => {
+                    obj[header] = currentline[index];
+                });
+                results.push(obj);
+            }
+
+
+            // Convert time strings to seconds and store each stage of the race
+            var leadSwim = 0;
+            var leadT1 = 0;
+            var leadBike = 0;
+            var leadT2 = 0;
+            var leadRun = 0;
+            var problemTimes = 0;
+            var problemIndexArray = [];
+            const swim1 = convertToSeconds(results[0]["Swim"]);
+            const t11 = convertToSeconds(results[0]["T1"]);
+            const bike1 = convertToSeconds(results[0]["Bike"]);
+            const t21 = convertToSeconds(results[0]["T2"]);
+            const run1 = convertToSeconds(results[0]["Run"]);
+            var fastestSplits = [swim1, t11, bike1, t21, run1];
+            var slowestSplits = [swim1, t11, bike1, t21, run1];
+            var timePerDisipline = [];
+            for (let i = 0; i < results.length; i++) {
+                var name = results[i]["Athlete First Name"] + " " + results[i]["Athlete Last Name"];
+                var finalTime = results[i][headers[headers.length - 1]].replace(/\r$/, '');
+
+                var swim = convertToSeconds(results[i]["Swim"]);
+                if (swim != 0) {
+                    if (swim < fastestSplits[0]) {
+                        fastestSplits[0] = swim;
+                    } else if (swim > slowestSplits[0]) {
+                        slowestSplits[0] = swim;
+                    }
+                }
+                var t1 = convertToSeconds(results[i]["T1"]);
+                const t1_abs = t1;
+                if (t1 != 0) {
+                    t1 += swim;
+                    if (t1_abs < fastestSplits[1]) {
+                        fastestSplits[1] = t1_abs;
+                    } else if (t1_abs > slowestSplits[1]) {
+                        slowestSplits[1] = t1_abs;
+                    }
+                }
+                var bike = convertToSeconds(results[i]["Bike"]);
+                const bike_abs = bike;
+                if (bike != 0) {
+                    bike += t1;
+                    if (bike_abs < fastestSplits[2]) {
+                        fastestSplits[2] = bike_abs;
+                    } else if (bike_abs > slowestSplits[2]) {
+                        slowestSplits[2] = bike_abs;
+                    }
+                }
+                var t2 = convertToSeconds(results[i]["T2"]);
+                const t2_abs = t2;
+                if (t2 != 0) {
+                    t2 += bike;
+                    if (t2_abs < fastestSplits[3]) {
+                        fastestSplits[3] = t2_abs;
+                    } else if (t2_abs > slowestSplits[3]) {
+                        slowestSplits[3] = t2_abs;
+                    }
+                }
+                var run = convertToSeconds(results[i]["Run"]);
+                const run_abs = run;
+                if (run != 0) {
+                    run += t2;
+                    if (run_abs < fastestSplits[4]) {
+                        fastestSplits[4] = run_abs;
+                    } else if (run_abs > slowestSplits[4]) {
+                        slowestSplits[4] = run_abs;
+                    }
+                }
+                var finalTimeInSeconds = convertToSeconds(finalTime);
+                if (Math.abs(finalTimeInSeconds - run) > 5) {
+                    problemIndexArray.push(i)
+                    problemTimes++;
+                }
+                timePerDisipline = [swim, t1_abs, bike_abs, t2_abs, run_abs];
+                if (i == 0) {
+                    leadSwim = swim;
+                    leadT1 = t1;
+                    leadBike = bike;
+                    leadT2 = t2;
+                    leadRun = run;
+                 //   console.log(swim, t1, bike, t2, run);
+                //    console.log("lead swimmer: " + name);
+                } else {
+                    if (swim != 0 && swim < leadSwim) {
+                        leadSwim = swim;
+                       // console.log("lead swimmer: " + name);
+                    }
+                    if (t1 != 0 && t1 < leadT1) {
+                        leadT1 = t1;
+                      //  console.log("lead t1: " + name);
+                    }
+                    if (bike != 0 && bike < leadBike) {
+                        leadBike = bike;
+                       // console.log("lead biker: " + name);
+                    }
+                    if (t2 != 0 && t2 < leadT2) {
+                        leadT2 = t2;
+                    //    console.log("lead t2: " + name);
+                    }
+                    if (run != 0 && run < leadRun) {
+                        leadRun = run;
+                    //    console.log("lead runner: " + name);
+                    }
+                    
+                }
+                athletesArray.push({
+                    athleteName: name,
+                    swim: swim,
+                    t1: t1,
+                    bike: bike,
+                    t2: t2,
+                    run: run,
+                    timePerDisipline: timePerDisipline,
+                    position: results[i]["Position"],
+                    status: results[i]["Status"],
+                    country: results[i]["Country"],
+                });
+
+                leadersArray[0] = leadSwim;
+                leadersArray[1] = leadT1;
+                leadersArray[2] = leadBike;
+                leadersArray[3] = leadT2;
+                leadersArray[4] = leadRun;
+            }
+            var spiderChartArray = [];
+            normalizeResults(fastestSplits, slowestSplits, spiderChartArray);
+            var problemString = "";
+            if (problemIndexArray.length > 0) {
+
+                problemString = "There were issues with the following " + problemIndexArray.length + " athlete results:<ul>"
+
+                for (let i = 0; i < problemIndexArray.length; i++) {
+                    if (athletesArray[problemIndexArray[i]].status == "") {
+                        problemString += "<li>" + athletesArray[problemIndexArray[i]].athleteName + "</li>";
+                        athletesArray[problemIndexArray[i]].athleteName += "***";
+                    }
+                    else {
+                        problemString = "";
+                    }
+                }
+                if (problemString != "") {
+                    problemString += "</ul>";
+                }
+               
+            }
+            console.log(problemString);
+            // Storing data in local storage
+            localStorage.setItem("data1", JSON.stringify(athletesArray));
+            localStorage.setItem("data2", JSON.stringify(leadersArray));
+            localStorage.setItem("strValue", problemString);
+
+                      
+            const filetitle = titlename.replace(/Results for |.csv/g, ""); // Extract title from filename
+
+            localStorage.setItem("strValue2", filetitle);
+
+            // Redirect with parameters as query parameters
+            window.location.href = "charts.html";
+
+        }
+
+
+
+
+
+
+
+
+
+
+
+   
+        function normalizeResults(fastestSplits, slowestSplits, spiderChartArray) {
+            for (let i = 0; i < athletesArray.length; i++) {
+                var normalizedSwim = 1 - (athletesArray[i].timePerDisipline[0] - fastestSplits[0]) / (slowestSplits[0] - fastestSplits[0]);
+                var normalizedT1 = 1 - (athletesArray[i].timePerDisipline[1] - fastestSplits[1]) / (slowestSplits[1] - fastestSplits[1]);
+                var normalizedBike = 1 - (athletesArray[i].timePerDisipline[2] - fastestSplits[2]) / (slowestSplits[2] - fastestSplits[2]);
+                var normalizedT2 = 1 - (athletesArray[i].timePerDisipline[3] - fastestSplits[3]) / (slowestSplits[3] - fastestSplits[3]);
+                var normalizedRun = 1 - (athletesArray[i].timePerDisipline[4] - fastestSplits[4]) / (slowestSplits[4] - fastestSplits[4]);
+                //using > 2 in case a normalized value ends up as 1.00002
+                if (normalizedSwim > 2){
+                    console.log(athletesArray[i].athleteName, "swim", athletesArray[i].timePerDisipline[0]);
+                    normalizedSwim = 0;
+                }
+                if (normalizedT1 > 2){
+                    console.log(athletesArray[i].athleteName, "t1", athletesArray[i].timePerDisipline[1]);
+                    normalizedT1 = 0;
+                }
+                if (normalizedBike > 2){
+                    console.log(athletesArray[i].athleteName, "bike", athletesArray[i].timePerDisipline[2]);
+                    normalizedBike = 0;
+                }
+                if (normalizedT2 > 2){
+                    console.log(athletesArray[i].athleteName, "t2", athletesArray[i].timePerDisipline[3]);
+                    normalizedT2 = 0;
+                }                
+                if (normalizedRun > 2){
+                    console.log(athletesArray[i].athleteName, "run", athletesArray[i].timePerDisipline[4]);
+                    normalizedRun = 0;
+                }
+                spiderChartArray.push({
+                    athleteName: athletesArray[i].athleteName,
+                    values: {
+                        'Swim': normalizedSwim,
+                        'T1': normalizedT1,
+                        'Bike': normalizedBike,
+                        'T2': normalizedBike,
+                        'Run': normalizedRun
+                    },
+                    position: athletesArray[i].position,
+                    status: athletesArray[i].status,
+                });
+            }
+        }
+
+
+
+
+
+ 
+            // Function to retrieve the current hit count from localStorage
+            function getHitCount() {
+                return localStorage.getItem('hitCount') || '0';
+            }
+
+            // Function to update the hit count and display it on the page
+            function updateHitCount() {
+                var hitCount = parseInt(getHitCount()) + 1;
+                localStorage.setItem('hitCount', hitCount);
+                console.log(hitCount);
+                const counter = document.getElementById("hitCounter");
+                counter.innerHTML = hitCount;
+                counter.style = "font-size: 8px";
+                counter.style.color = "#F5F5F5";
+            }
+
+            // Call the updateHitCount function to increment the hit count
+            updateHitCount();
+        });
+
+    </script>
+</body>
+
+</html>
