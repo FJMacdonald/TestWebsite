@@ -34,7 +34,7 @@
         <button id="resetButton" class="button" style="display: none;">Reset</button>
         
         <!-- Issue button -->
-        <button id="issueButton" class="button" style="display: none;" onclick="showPopup()">Report Issue</button>
+        <button id="issueButton" class="button" style="display: none;" onclick="showPopup()">Data Problems</button>
 
         <div id="development_chart"></div>
         <div id="spiderchart_title"></div>
@@ -55,6 +55,7 @@
         // Access the data passed as parameters
         const athletesArray = JSON.parse(localStorage.getItem("data1"));
         const leadersArray = JSON.parse(localStorage.getItem("data2"));
+        const spiderChartArray = JSON.parse(localStorage.getItem("data3"));
         const problemString = localStorage.getItem("strValue");
         const title = localStorage.getItem("strValue2");
 
@@ -84,7 +85,7 @@
         }
 
         //draw the chart
-        drawChart(athletesArray, leadersArray);
+        drawChart(athletesArray, leadersArray, spiderChartArray);
 
     </script>
 </body>

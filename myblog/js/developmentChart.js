@@ -1,11 +1,11 @@
 const errorResult = 99999;
 
 // Draws the chart
-function drawChart(athletesArray, leadersArray) {
+function drawChart(athletesArray, leadersArray, spiderChartArray) {
 
     console.log(athletesArray);
     console.log(leadersArray);
-
+    console.log(spiderChartArray);
 
     if (athletesArray.length == 0) {
         return
@@ -119,6 +119,7 @@ function drawChart(athletesArray, leadersArray) {
     var max_time_lag = 0;
 
     const resultsArray = [];
+    var athleteIndexArray = [];
     for (let i = 0; i < athletesArray.length; i++) {
         const runDiff = athletesArray[i].run - leadersArray[4];
 
