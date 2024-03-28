@@ -1,7 +1,10 @@
 const errorResult = 99999;
 
 // Draws the chart
-function drawChart(athletesArray, leadersArray, max_time_lag, problemString) {
+function drawChart(athletesArray, leadersArray) {
+
+    console.log(athletesArray);
+    console.log(leadersArray);
 
 
     if (athletesArray.length == 0) {
@@ -89,24 +92,7 @@ function drawChart(athletesArray, leadersArray, max_time_lag, problemString) {
     // Add a click event listener to the reset button
     document.getElementById("resetButton").addEventListener("click", resetChart);
 
-    if (problemString.length > 0){
-        document.getElementById('issueButton').style.display = 'inline-block';
-        // Add a click event listener to the issues button
-        document.getElementById("issueButton").addEventListener("click", showPopup);
-    }
-    function showPopup() {
-        console.log("in show popup")
-        document.getElementById('issuePopup').style.display = 'block';
-        document.getElementById('issueString').innerHTML = problemString;
-        // Add a click event listener to the issues button
-        document.getElementById("close-popup").addEventListener("click", closeIssuePopup);
-    }
 
-    // JavaScript function to close the popup
-    function closeIssuePopup() {
-        console.log("in close 2")
-        document.getElementById('issuePopup').style.display = 'none';
-    }
 
     // Function to reset the chart
     function resetChart() {
@@ -130,9 +116,9 @@ function drawChart(athletesArray, leadersArray, max_time_lag, problemString) {
 
     const duration = 300; //To calibrate all races to proportions of swim=10, t=2, bike=30, run=20
     const raceLength = 70;
+    var max_time_lag = 0;
 
-    resultsArray = [];
-
+    const resultsArray = [];
     for (let i = 0; i < athletesArray.length; i++) {
         const runDiff = athletesArray[i].run - leadersArray[4];
 
@@ -184,6 +170,7 @@ function drawChart(athletesArray, leadersArray, max_time_lag, problemString) {
             values: values,
         });
     }
+    console.log("resultsArray", resultsArray);
 
     //This function takes an input time in seconds, calculates the minutes and remaining 
     //seconds, and formats them as "minutes:seconds". It also ensures that single-digit 
