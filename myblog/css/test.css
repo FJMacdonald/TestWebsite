@@ -1,15 +1,19 @@
 /* class = "label" used on graph */
-* {
-    font-family: 'Courier New';
-}
 .label {
   text-align: center;
   color: black;
-  font-size: 14;
+  font-size: 2.0vw;
   font-family: 'Courier New';
   text-anchor: left;
 }
-
+.label-small {
+  text-align: center;
+  color: black;
+  font-size: 1.5vw;
+  font-family: 'Courier New';
+  text-anchor: left;
+  letter-spacing: -1px;
+}
 
 h1, h2, h3  {
     text-align: center;
@@ -19,7 +23,8 @@ h4, h5, h6 {
 }
 body {
     /* background-color: rgb(221, 233, 238); */
-    margin-left: 20px;
+    font-family: 'Courier New'; 
+    font-size: 2.8vw;
 }
 .button {
     display: inline-block;

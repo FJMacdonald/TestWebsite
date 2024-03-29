@@ -183,20 +183,23 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
         return formattedTime;
     }
 
-    // Define the size and spacing of the rectangles
-    const size = 25;
+
 
     //rectangles in the legend (athletes + teams)
     nRects = athletesArray.length
-    const clientWidth = d3.select("#development_chart").node().getBoundingClientRect().width;
+    const clientWidth = window.innerWidth;//d3.select("#development_chart").node().getBoundingClientRect().width;
+    const clientHeight = window.innerHeight;
     const nColumns = Math.trunc(clientWidth / 200);
+    // Define the size and spacing of the rectangles
+    console.log("dimensions", clientWidth, clientHeight);
+    const size = 25;
     const bottom = Math.ceil(nRects / nColumns) * size * 1.2 + 70;
 
 
     // set the dimensions and margins of the graph
-    var margin = { top: 40, right: 10, bottom: bottom, left: 70 },
+    var margin = { top: 40, right: 10, bottom: bottom, left: clientWidth/14 },
         width = clientWidth - margin.left - margin.right,
-        height = 500
+        height = 0.6*clientHeight;
     // append the svg object to the body of the page
     svg = d3.select("#development_chart")
         .append("svg")
@@ -237,8 +240,6 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
     // Define the initial yAxis
     const yAxis = d3.axisLeft(yScale).ticks(0);
 
-
-
     // Add x-axis
     var xAxis = d3.axisTop(xScale).ticks(0);
     svg.append("g")
@@ -250,11 +251,11 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
         .attr("class", "y axis label")
         .call(yAxis)
         .append('text')
-        .attr("y", -45)
+        .attr("y", -clientWidth/20)
         .attr("x", -10)
         .attr("transform", "rotate(-90)")
         .attr("fill", "#000")
-        .attr("font-size", "16")
+        // .attr("font-size", "16")
         .text("Time Behind Leader");
 
 
@@ -370,7 +371,7 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
 
         // Modify the font style for the tick labels
         yAxisGroup.selectAll(".tick text")
-            .attr("class", "label");
+            .attr("class", "label-small");
 
 
         // // Add y-axis gridlines
@@ -422,7 +423,7 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
         }
         //  x position for country code
         function labelPosX2(d, i) {
-            return ((i % nColumns) * (clientWidth / nColumns) - 50) + 1.2 * size + 120;
+            return ((i % nColumns) * (clientWidth / nColumns) - 50) + 1.2 * size + 120;//0.6*(clientWidth / nColumns);
         }
         // y position for first name
         function labelPosY(d, i) {
@@ -544,7 +545,7 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
             .attr("y", labelPosY3)
             .attr("fill", function (d, i) { return colorPalette[i]; })
             .text(function (d) { return d.country; })
-            .attr("font-size", 25);
+            .attr("font-size", size);
 
 
         //Draw path
