@@ -190,6 +190,7 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
     const clientWidth = window.innerWidth;//d3.select("#development_chart").node().getBoundingClientRect().width;
     const clientHeight = window.innerHeight;
     const nColumns = Math.trunc(clientWidth / 200);
+    const nRows = Math.trunc(nRects/ nColumns);
     // Define the size and spacing of the rectangles
     console.log("dimensions", clientWidth, clientHeight);
     const size = 25;
@@ -580,33 +581,48 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
         var circleRadius = 3;
         const circleRadiusHover = 6;
 
-
+        const columnWidth = width/nColumns;
         //  x position for rect
         function rectPosX(d, i) {
-            return (i % nColumns) * (clientWidth / nColumns) - 50;
-        }
-        function rectPosY(d, i) {
-            return (height + Math.floor(i / nColumns) * 30 + 50);
-        }
-        //  x position for names
-        function labelPosX(d, i) {
-            return ((i % nColumns) * (clientWidth / nColumns) - 50) + 1.2 * size;
+            return (Math.floor(i / nRows)) * (clientWidth / nColumns) - 50;
+          }
+          
+          function labelPosX(d, i) {
+            return  (Math.floor(i / nRows)) * (clientWidth / nColumns) - 50 + 1.2 * size;
         }
         //  x position for country code
         function labelPosX2(d, i) {
-            return ((i % nColumns) * (clientWidth / nColumns) - 50) + 1.2 * size + 120;//0.6*(clientWidth / nColumns);
+            return (Math.floor(i / nRows)) * (clientWidth / nColumns) - 50 + 1.2 * size + 120;//0.6*(clientWidth / nColumns);
         }
+        
+        function rectPosY(d, i) {
+            return height + (i % nRows) * 30 + 50;
+          }
+        // function rectPosX(d, i) {
+        //     return (i % nColumns) * (clientWidth / nColumns) - 50;
+        // }
+        // function rectPosY(d, i) {
+        //     return (height + Math.floor(i / nColumns) * 30 + 50);
+        // }
+        //  x position for names
+        // function labelPosX(d, i) {
+        //     return ((i % nColumns) * (clientWidth / nColumns) - 50) + 1.2 * size;
+        // }
+        // //  x position for country code
+        // function labelPosX2(d, i) {
+        //     return ((i % nColumns) * (clientWidth / nColumns) - 50) + 1.2 * size + 120;//0.6*(clientWidth / nColumns);
+        // }
         // y position for first name
         function labelPosY(d, i) {
-            return (height + Math.floor(i / nColumns) * 30 + 50) + 0.4 * size;
+            return (height + (i % nRows) * 30 + 50) + 0.4 * size;
         }
         // y position for last name
         function labelPosY2(d, i) {
-            return (height + Math.floor(i / nColumns) * 30 + 50) + 0.9 * size;
+            return (height + (i % nRows) * 30 + 50) + 0.9 * size;
         }
         // y position for country code
         function labelPosY3(d, i) {
-            return (height + Math.floor(i / nColumns) * 30 + 50) + 0.6 * size;
+            return (height + (i % nRows) * 30 + 50) + 0.6 * size;
         }
         //add the frame for the rectangle (so it doesn't disapear when opacity = 0)
         svg.append("g")
