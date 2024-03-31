@@ -88,3 +88,55 @@ body {
 .file-buttons .button {
   margin-right: 8px; /* Adjust as needed */
 }
+
+#legend-container {
+  overflow-x: hidden;
+  white-space: nowrap;
+}
+
+/* CSS for the file legend */
+#legend-container {
+  overflow-x: hidden;
+  white-space: nowrap;
+}
+
+#legend-pages {
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  margin: 0;
+}
+
+#legend-pages li {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+#legend-pages li div {
+  margin: 5px;
+  padding: 5px;
+  border: 1px solid #ccc;
+}
+
+#legend-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  background-color: gray;
+  border-radius: 50%;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.legend-dot.active {
+  background-color: black;
+}

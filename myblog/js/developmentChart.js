@@ -197,9 +197,9 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
 
 
     // set the dimensions and margins of the graph
-    var margin = { top: 40, right: 10, bottom: bottom, left: clientWidth/14 },
+    var margin = { top: 40, right: 10, bottom: bottom, left: clientWidth / 14 },
         width = clientWidth - margin.left - margin.right,
-        height = 0.6*clientHeight;
+        height = 0.6 * clientHeight;
     // append the svg object to the body of the page
     svg = d3.select("#development_chart")
         .append("svg")
@@ -251,7 +251,7 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
         .attr("class", "y axis label")
         .call(yAxis)
         .append('text')
-        .attr("y", -clientWidth/20)
+        .attr("y", -clientWidth / 20)
         .attr("x", -10)
         .attr("transform", "rotate(-90)")
         .attr("fill", "#000")
@@ -401,6 +401,177 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
 
 
     function updateChart(max_time_lag) {
+
+
+
+        // Extract athlete names from each object in resultsArray
+        const athletes = resultsArray.map(item => item.athleteName);
+
+
+
+        function renderLegendPage(pageIndex) {
+            console.log("render page");
+            var legendPage = document.createElement('li');
+            var startIndex = pageIndex * 4;
+            var endIndex = Math.min(startIndex + 4, athletes.length);
+
+            for (var i = startIndex; i < endIndex; i++) {
+                var listItem = document.createElement('div');
+                listItem.textContent = (i + 1) + ". " + athletes[i]; // Add place number
+                legendPage.appendChild(listItem);
+            }
+
+            console.log("render dots");
+            var numPages = Math.ceil(athletes.length / (4 * nColumns));
+            var legendDotsContainer = document.getElementById('legend-dots');
+            // Clear previous legend dots
+            legendDotsContainer.innerHTML = '';
+
+            // Render legend dots
+            for (var i = 0; i < numPages; i++) {
+                var dot = document.createElement('span');
+                dot.classList.add('legend-dot');
+                dot.dataset.pageIndex = i;
+                legendDotsContainer.appendChild(dot);
+            }
+
+
+            
+            renderLegendDots();
+            return legendPage;
+        }
+        function renderLegend() {
+            console.log("render legend");
+            var numPages = Math.ceil(athletes.length / 4);
+            var legendPagesContainer = document.getElementById('legend-pages');
+
+            // Clear previous legend pages
+            legendPagesContainer.innerHTML = '';
+
+            // Render legend pages
+            for (var i = 0; i < numPages; i++) {
+                var legendPage = renderLegendPage(i);
+                legendPagesContainer.appendChild(legendPage);
+            }
+        }
+
+        function swipeLegend(direction) {
+            console.log("swipe");
+            var legendContainer = document.getElementById('legend-container');
+            var currentPage = legendContainer.scrollLeft / legendContainer.offsetWidth;
+            var newPage;
+
+            if (direction === 'left') {
+                newPage = Math.max(currentPage - 1, 0);
+            } else if (direction === 'right') {
+                newPage = Math.min(currentPage + 1, Math.ceil(athletes.length / 4) - 1);
+            }
+
+            legendContainer.scrollTo({
+                left: newPage * legendContainer.offsetWidth,
+                behavior: 'smooth'
+            });
+            console.log("page index", Math.round(newPage));
+            highlightLegendDot(Math.round(newPage));
+
+        }
+
+        // Detect swipe gestures
+        var startX = 0;
+
+        document.addEventListener('touchstart', function (event) {
+            console.log("start");
+            startX = event.touches[0].clientX;
+        });
+
+        document.addEventListener('touchend', function (event) {
+            console.log("end");
+            var endX = event.changedTouches[0].clientX;
+            var deltaX = endX - startX;
+            var threshold = 50; // Adjust the threshold for swipe detection
+
+            if (Math.abs(deltaX) > threshold) {
+                if (deltaX > 0) {
+                    swipeLegend('left');
+                } else {
+                    swipeLegend('right');
+                }
+            }
+        });
+
+        // Mouse event listeners as fallback
+        document.addEventListener('mousedown', function (event) {
+            console.log("mouse down");
+            startX = event.clientX;
+            startY = event.clientY;
+        });
+
+        document.addEventListener('mouseup', function (event) {
+            console.log("mouse up");
+            var endX = event.clientX;
+            var deltaX = endX - startX;
+            var threshold = 50; // Adjust the threshold for swipe detection
+
+            if (Math.abs(deltaX) > threshold) {
+                if (deltaX > 0) {
+                    swipeLegend('left');
+                } else {
+                    swipeLegend('right');
+                }
+            }
+        });
+        // Render legend initially
+        renderLegend();
+        // Highlight the first dot initially    
+        highlightLegendDot(0);
+
+        function renderLegendDots() {
+            console.log("render dots");
+            var numPages = Math.ceil(athletes.length / (4 * nColumns));
+            var legendDotsContainer = document.getElementById('legend-dots');
+            // Clear previous legend dots
+            legendDotsContainer.innerHTML = '';
+
+            // Render legend dots
+            for (var i = 0; i < numPages; i++) {
+                var dot = document.createElement('span');
+                dot.classList.add('legend-dot');
+                dot.dataset.pageIndex = i;
+                legendDotsContainer.appendChild(dot);
+            }
+
+
+
+        }
+
+        function highlightLegendDot(pageIndex) {
+            console.log("highlight dots");
+            var legendDots = document.querySelectorAll('.legend-dot');
+            for (var i = 0; i < legendDots.length; i++) {
+                legendDots[i].classList.remove('active');
+            }
+            legendDots[pageIndex].classList.add('active');
+        }
+
+        // Event listener for legend dot clicks
+        document.getElementById('legend-dots').addEventListener('click', function (event) {
+            if (event.target.classList.contains('legend-dot')) {
+                var pageIndex = parseInt(event.target.dataset.pageIndex);
+                var legendContainer = document.getElementById('legend-container');
+                legendContainer.scrollTo({
+                    left: pageIndex * legendContainer.offsetWidth,
+                    behavior: 'smooth'
+                });
+                highlightLegendDot(pageIndex);
+            }
+        });
+
+        // Event listener for legend container scroll
+        document.getElementById('legend-container').addEventListener('scroll', function () {
+            var pageIndex = Math.round(this.scrollLeft / this.offsetWidth);
+        });
+
+
 
 
         var lineOpacity = "0.5";
