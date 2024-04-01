@@ -190,12 +190,16 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
     const clientWidth = window.innerWidth;//d3.select("#development_chart").node().getBoundingClientRect().width;
     const clientHeight = window.innerHeight;
     const nColumns = Math.trunc(clientWidth / 200);
-    const nRows = Math.trunc(nRects/ nColumns);
+    const nRows = Math.trunc(nRects / nColumns);
     // Define the size and spacing of the rectangles
     console.log("dimensions", clientWidth, clientHeight);
     const size = 25;
     const bottom = Math.ceil(nRects / nColumns) * size * 1.2 + 70;
+    var lineOpacity = "0.5";
+    var lineStroke = "1.0";
 
+    var circleRadius = 3;
+    const circleRadiusHover = 6;
 
     // set the dimensions and margins of the graph
     var margin = { top: 40, right: 10, bottom: bottom, left: clientWidth / 14 },
@@ -404,26 +408,99 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
     function updateChart(max_time_lag) {
 
 
-
-        // Extract athlete names from each object in resultsArray
-        const athletes = resultsArray.map(item => item.athleteName);
-
-
-
         function renderLegendPage(pageIndex) {
             console.log("render page");
-            var legendPage = document.createElement('li');
             var startIndex = pageIndex * 4;
-            var endIndex = Math.min(startIndex + 4, athletes.length);
-
+            var endIndex = Math.min(startIndex + 4, resultsArray.length);
+        
+            var legendPage = d3.create('li');
             for (var i = startIndex; i < endIndex; i++) {
-                var listItem = document.createElement('div');
-                listItem.textContent = (i + 1) + ". " + athletes[i]; // Add place number
-                legendPage.appendChild(listItem);
+                (function (index) {
+                    var listItem = legendPage.append('div')
+                        .classed('legend-item', true);
+        
+                    // Append the clickable rectangle
+                    var innerRect = listItem.append('svg')
+                        .attr('width', size) // Adjust width as needed
+                        .attr('height', size) // Adjust height as needed
+                        .selectAll('.innerRect') // Select existing .innerRect elements (if any)
+                        .data([resultsArray[index]]) // Bind data to new .innerRect elements
+                        .join('rect') // Join data to elements
+                        .attr('class', 'innerRect')
+                        .attr('width', size)
+                        .attr('height', size)
+                        .style('stroke', 'Black')
+                        .style('stroke-width', lineStroke)
+                        .style('opacity', lineOpacity)
+                        .attr('fill', colorPalette[index])
+                        .on('click', function (d, i) {
+                            // Handle click event for the rectangle
+                            var athleteRect = d3.select(this);
+                            var opacity = athleteRect.style('opacity');
+                            if (opacity === '0.5') {
+                                lineOpacity = '1.0';
+                                lineStroke = '3.0';
+                                circleRadius = 3;
+                            } else if (opacity === '1.0') {
+                                lineOpacity = '0.0';
+                                lineStroke = '1.0';
+                                circleRadius = 0;
+                            } else {
+                                lineOpacity = '0.5';
+                                lineStroke = '1.0';
+                                circleRadius = 3;
+                            }
+        
+                            // set the new state of the rect
+                            athleteRect.style("opacity", lineOpacity);
+        
+                            // Get the index of the clicked element's data in the resultsArray
+                            const athleteIndex = index;//resultsArray.findIndex(item => item === d);
+                            console.log("athleteIndex", athleteIndex)
+                            console.log("i", i)
+                            console.log("index", index)
+                            // Filter for the corresponding athlete path & update it with new state
+                            const athleteLine = svg.selectAll(".line").filter((d, i) => i === athleteIndex);
+                            athleteLine.style("opacity", lineOpacity);
+                            athleteLine.style("stroke-width", lineStroke);
+        
+                            // Filter for the corresponding athlete label & update it with new state
+                            const athletetext = svg.selectAll(".line-name").filter((d, i) => i === athleteIndex);
+                            if (lineOpacity == 1.0) {
+                                athletetext.style("visibility", "visible");
+                                athleteIndexArray.push(athleteIndex);
+                            } else {
+                                athletetext.style("visibility", "hidden");
+                                // Remove athlete from spider chart
+                                let index = athleteIndexArray.indexOf(athleteIndex);
+                                if (index !== -1) {
+                                    athleteIndexArray.splice(index, 1);
+                                }
+                            }
+        
+                            // Filter for the corresponding athlete path circles & update them with new state
+                            const athleteCircles = svg.selectAll(".athlete-circle").filter(d => d.athleteIndex === athleteIndex);
+                            athleteCircles.each(function (d) {
+                                d3.select(this)
+                                    .style("opacity", lineOpacity)
+                                    .attr("r", circleRadius);
+                            });
+        
+                          //  drawSpiderChart(spiderChartArray, athleteIndexArray);
+                        });
+        
+                    // Append the athlete name
+                    listItem.append('span')
+                        .text((index + 1) + '. ' + resultsArray[index].athleteName);
+                })(i);
             }
+            renderLegendDots();
+            return legendPage.node();
+        }
 
+        function renderLegendDots() {
             console.log("render dots");
-            var numPages = Math.ceil(athletes.length / (4 * nColumns));
+            var numPages = Math.ceil(resultsArray.length / (4 * nColumns));
             var legendDotsContainer = document.getElementById('legend-dots');
             // Clear previous legend dots
             legendDotsContainer.innerHTML = '';
@@ -435,15 +512,11 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
                 dot.dataset.pageIndex = i;
                 legendDotsContainer.appendChild(dot);
             }
-
-
-            
-            renderLegendDots();
-            return legendPage;
         }
+        
         function renderLegend() {
             console.log("render legend");
-            var numPages = Math.ceil(athletes.length / 4);
+            var numPages = Math.ceil(resultsArray.length / 4);
             var legendPagesContainer = document.getElementById('legend-pages');
 
             // Clear previous legend pages
@@ -465,7 +538,7 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
             if (direction === 'left') {
                 newPage = Math.max(currentPage - 1, 0);
             } else if (direction === 'right') {
-                newPage = Math.min(currentPage + 1, Math.ceil(athletes.length / 4) - 1);
+                newPage = Math.min(currentPage + 1, Math.ceil(resultsArray.length / 4) - 1);
             }
 
             legendContainer.scrollTo({
@@ -528,7 +601,7 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
 
         function renderLegendDots() {
             console.log("render dots");
-            var numPages = Math.ceil(athletes.length / (4 * nColumns));
+            var numPages = Math.ceil(resultsArray.length / (4 * nColumns));
             var legendDotsContainer = document.getElementById('legend-dots');
             // Clear previous legend dots
             legendDotsContainer.innerHTML = '';
@@ -572,46 +645,23 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
             var pageIndex = Math.round(this.scrollLeft / this.offsetWidth);
         });
 
-
-
-
-        var lineOpacity = "0.5";
-        var lineStroke = "1.0";
-
-        var circleRadius = 3;
-        const circleRadiusHover = 6;
-
-        const columnWidth = width/nColumns;
+        const columnWidth = width / nColumns;
         //  x position for rect
         function rectPosX(d, i) {
             return (Math.floor(i / nRows)) * (clientWidth / nColumns) - 50;
-          }
-          
-          function labelPosX(d, i) {
-            return  (Math.floor(i / nRows)) * (clientWidth / nColumns) - 50 + 1.2 * size;
+        }
+        //  x position for athlete name
+        function labelPosX(d, i) {
+            return (Math.floor(i / nRows)) * (clientWidth / nColumns) - 50 + 1.2 * size;
         }
         //  x position for country code
         function labelPosX2(d, i) {
             return (Math.floor(i / nRows)) * (clientWidth / nColumns) - 50 + 1.2 * size + 120;//0.6*(clientWidth / nColumns);
         }
-        
+        //  y position for rect
         function rectPosY(d, i) {
             return height + (i % nRows) * 30 + 50;
-          }
-        // function rectPosX(d, i) {
-        //     return (i % nColumns) * (clientWidth / nColumns) - 50;
-        // }
-        // function rectPosY(d, i) {
-        //     return (height + Math.floor(i / nColumns) * 30 + 50);
-        // }
-        //  x position for names
-        // function labelPosX(d, i) {
-        //     return ((i % nColumns) * (clientWidth / nColumns) - 50) + 1.2 * size;
-        // }
-        // //  x position for country code
-        // function labelPosX2(d, i) {
-        //     return ((i % nColumns) * (clientWidth / nColumns) - 50) + 1.2 * size + 120;//0.6*(clientWidth / nColumns);
-        // }
+        }
         // y position for first name
         function labelPosY(d, i) {
             return (height + (i % nRows) * 30 + 50) + 0.4 * size;
