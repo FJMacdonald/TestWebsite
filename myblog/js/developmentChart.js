@@ -187,14 +187,14 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
 
     //rectangles in the legend (athletes + teams)
     nRects = athletesArray.length
-    const clientWidth = window.innerWidth;//d3.select("#development_chart").node().getBoundingClientRect().width;
+    const clientWidth = window.innerWidth;
     const clientHeight = window.innerHeight;
     const nColumns = Math.trunc(clientWidth / 200);
     const nRows = Math.trunc(nRects / nColumns);
     // Define the size and spacing of the rectangles
     console.log("dimensions", clientWidth, clientHeight);
     const size = 25;
-    const bottom = Math.ceil(nRects / nColumns) * size * 1.2 + 70;
+    const bottom = 10;
     var lineOpacity = "0.5";
     var lineStroke = "1.0";
 
@@ -409,9 +409,34 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
 
 
         function renderLegendPage(pageIndex) {
-            console.log("render page");
+            // Calculate startIndex, endIndex, and visibleAthletesCount
             var startIndex = pageIndex * 4;
             var endIndex = Math.min(startIndex + 4, resultsArray.length);
+
+            var totalAthletes = resultsArray.length;
+ 
+            // assume max colum width
+            const columnWidth = 350;
+            var totalColumns = totalAthletes / 4;
+            var visibleColums = Math.trunc(width/columnWidth);
+            var numDots = totalColumns / visibleColums;
+
+
+            // Update legend dots container
+            var legendDotsContainer = document.getElementById('legend-dots');
+            legendDotsContainer.innerHTML = '';
+            console.log('totalAthletes', totalAthletes);
+            console.log('totalColumns', totalColumns);
+            console.log('visibleColums', visibleColums);
+
+            console.log('numDots', numDots);
+            // Render legend dots
+            for (var i = 0; i < numDots; i++) {
+                var dot = document.createElement('span');
+                dot.classList.add('legend-dot');
+                dot.dataset.pageIndex = i;
+                legendDotsContainer.appendChild(dot);
+            }
         
             var legendPage = d3.create('li');
             for (var i = startIndex; i < endIndex; i++) {
@@ -486,33 +511,35 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
                                     .attr("r", circleRadius);
                             });
         
-                          //  drawSpiderChart(spiderChartArray, athleteIndexArray);
+                            drawSpiderChart(spiderChartArray, athleteIndexArray);
                         });
         
-                    // Append the athlete name
+                   // Append the athlete name
                     listItem.append('span')
-                        .text((index + 1) + '. ' + resultsArray[index].athleteName);
+                        .attr("class", "label")
+                        .text((index + 1) + '. ' + resultsArray[index].athleteName + ' ' + resultsArray[index].country);
+
                 })(i);
             }
-            renderLegendDots();
+       //     renderLegendDots();
             return legendPage.node();
         }
 
-        function renderLegendDots() {
-            console.log("render dots");
-            var numPages = Math.ceil(resultsArray.length / (4 * nColumns));
-            var legendDotsContainer = document.getElementById('legend-dots');
-            // Clear previous legend dots
-            legendDotsContainer.innerHTML = '';
+        // function renderLegendDots() {
+        //     console.log("render dots");
+        //     var numPages = Math.ceil(resultsArray.length / (4 * nColumns));
+        //     var legendDotsContainer = document.getElementById('legend-dots');
+        //     // Clear previous legend dots
+        //     legendDotsContainer.innerHTML = '';
 
-            // Render legend dots
-            for (var i = 0; i < numPages; i++) {
-                var dot = document.createElement('span');
-                dot.classList.add('legend-dot');
-                dot.dataset.pageIndex = i;
-                legendDotsContainer.appendChild(dot);
-            }
-        }
+        //     // Render legend dots
+        //     for (var i = 0; i < numPages; i++) {
+        //         var dot = document.createElement('span');
+        //         dot.classList.add('legend-dot');
+        //         dot.dataset.pageIndex = i;
+        //         legendDotsContainer.appendChild(dot);
+        //     }
+        // }
         
         function renderLegend() {
             console.log("render legend");
@@ -599,24 +626,21 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
         // Highlight the first dot initially    
         highlightLegendDot(0);
 
-        function renderLegendDots() {
-            console.log("render dots");
-            var numPages = Math.ceil(resultsArray.length / (4 * nColumns));
-            var legendDotsContainer = document.getElementById('legend-dots');
-            // Clear previous legend dots
-            legendDotsContainer.innerHTML = '';
+        // function renderLegendDots() {
+        //     console.log("render dots");
+        //     var numPages = Math.ceil(resultsArray.length / (4 * nColumns));
+        //     var legendDotsContainer = document.getElementById('legend-dots');
+        //     // Clear previous legend dots
+        //     legendDotsContainer.innerHTML = '';
 
-            // Render legend dots
-            for (var i = 0; i < numPages; i++) {
-                var dot = document.createElement('span');
-                dot.classList.add('legend-dot');
-                dot.dataset.pageIndex = i;
-                legendDotsContainer.appendChild(dot);
-            }
-
-
-
-        }
+        //     // Render legend dots
+        //     for (var i = 0; i < numPages; i++) {
+        //         var dot = document.createElement('span');
+        //         dot.classList.add('legend-dot');
+        //         dot.dataset.pageIndex = i;
+        //         legendDotsContainer.appendChild(dot);
+        //     }
+        // }
 
         function highlightLegendDot(pageIndex) {
             console.log("highlight dots");
@@ -646,6 +670,7 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
         });
 
         const columnWidth = width / nColumns;
+        /*
         //  x position for rect
         function rectPosX(d, i) {
             return (Math.floor(i / nRows)) * (clientWidth / nColumns) - 50;
@@ -783,7 +808,7 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
             .attr("fill", function (d, i) { return colorPalette[i]; })
             .text(function (d) { return d.country; })
             .attr("font-size", size);
-
+*/
 
         //Draw path
         svg.selectAll("path")
