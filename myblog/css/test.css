@@ -89,14 +89,10 @@ body {
   margin-right: 8px; /* Adjust as needed */
 }
 
-#legend-container {
-  overflow-x: hidden;
-  white-space: nowrap;
-}
 
 /* CSS for the file legend */
 #legend-container {
-  overflow-x: hidden;
+  overflow-x: auto;
   white-space: nowrap;
 }
 
