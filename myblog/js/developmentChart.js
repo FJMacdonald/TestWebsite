@@ -536,7 +536,7 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
                 .style('float', 'left') // Right-align the text
                 .style('text-align', 'left') // Align the text to the right
                 .attr("class", "label")
-                .text(nameParts + resultsArray[index].country);
+                .text(nameParts.pop() + resultsArray[index].country);//lastname + flag
         }
 
         function renderLegendPage(pageIndex) {
@@ -570,7 +570,7 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
             console.log("columnWidth", columnWidth);
             const athletesPerColumn = 4; // Assuming 4 athletes per column
             const maxAthletesOnPage = Math.floor(containerWidth / columnWidth);
-            const athletesOnPage = Math.floor(maxAthletesOnPage / athletesPerColumn) * athletesPerColumn;
+            const athletesOnPage = maxAthletesOnPage * athletesPerColumn;
             console.log("athletesOnPage", athletesOnPage);
             var numDots = Math.ceil(resultsArray.length / athletesOnPage);
             console.log("numDots", numDots);
