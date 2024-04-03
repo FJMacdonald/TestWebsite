@@ -292,8 +292,6 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
         .domain([0, raceLength]) //assuming a 90min race
         .range([0, width]); //leaving space for ledgend
 
-    // Extract y-coordinates from data
-    // const yValues = athletesArray.flatMap(athlete => d.values.flat());//.map(point => point.y));
 
     // Define the initial yScale
     const yScale = d3.scaleLinear()
@@ -393,30 +391,6 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
     svg.on("touchstart", yBrushed)
         .on("touchmove", yBrushed)
         .on("touchend", yBrushed);
-
-
-
-        // // Function to handle touch start event
-        // function handleTouchStart(event, d) {
-        //     // Highlight the line or perform any action you want
-        //     d3.select(this).attr("stroke-width", 4);
-        //     // You can also display additional information
-        //     // or trigger any other action based on the touched line
-        // }
-
-        // // Function to handle touch end event
-        // function handleTouchEnd(event, d) {
-        //     // Remove the highlighting or revert back to original state
-        //     d3.select(this).attr("stroke-width", 2);
-        //     // You can hide the additional information displayed during touch start
-        // }
-
-        // // Apply touch event listeners to the lines
-        // svg.selectAll(".line")
-        //     .on("touchstart", handleTouchStart)
-        //     .on("touchend", handleTouchEnd);
-
-
 
 
 
