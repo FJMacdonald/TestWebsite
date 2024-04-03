@@ -248,8 +248,7 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
     nRects = athletesArray.length
     const clientWidth = window.innerWidth;
     const clientHeight = window.innerHeight;
-    const nColumns = Math.trunc(clientWidth / 200);
-    const nRows = Math.trunc(nRects / nColumns);
+
     // Define the size and spacing of the rectangles
     const size = 25;
     const bottom = 10;
@@ -498,29 +497,25 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
 
         function estimateColumnWidth() {
             // Initialize variable to store the longest name
-            var longestName = "";
+            var longestName = "Schummelfelder 🇬🇧";
 
-            // Iterate through the resultsArray to find the longest name
-            resultsArray.forEach(function (athlete) {
-                if (athlete.athleteName.length > longestName.length) {
-                    longestName = athlete.athleteName;
-                }
-            });
             // Get the computed style of an element with class 'label'
             var labelElement = document.querySelector('.label');
             var computedStyle = window.getComputedStyle(labelElement);
 
             // Extract the font size from the computed style
             var fontSize = computedStyle.getPropertyValue('font-size');
-
+            
             // Create a temporary span element to measure the width of the name
             var span = document.createElement('span');
             span.textContent = longestName;
-            span.style.fontSize = fontSize;
+            span.style.fontSize = fontSize;//        s'2.0vw'; 
+            console.log("fontsize", fontSize, span.style.fontSize);
             span.style.visibility = 'hidden';
             document.body.appendChild(span);
             // Get the width of the span element
             var width = span.offsetWidth;
+            console.log("width", width);
             // Remove the temporary span element
             document.body.removeChild(span);
             return width;
@@ -651,17 +646,13 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
 
             // Get the legend container and the legend item width
             var legendContainer = document.getElementById('legend-container');
-
+            const containerStyle = window.getComputedStyle(legendContainer);
             const containerWidth = legendContainer.offsetWidth;
+
             const columnWidth = estimateColumnWidth();
-            // console.log("containerWidth", containerWidth);
-            // console.log("columnWidth", columnWidth);
-            const athletesPerColumn = 4; // Assuming 4 athletes per column
-            const maxAthletesOnPage = Math.floor(containerWidth / columnWidth);
-            const athletesOnPage = maxAthletesOnPage * athletesPerColumn;
-            //console.log("athletesOnPage", athletesOnPage);
+            const columns = Math.floor(containerWidth / columnWidth);
+            const athletesOnPage = columns*4;
             var numDots = Math.ceil(resultsArray.length / athletesOnPage);
-           // console.log("numDots", numDots);
             // Render legend dots
             for (var i = 0; i < numDots; i++) {
                 var dot = legendDotsContainer.append('span')
