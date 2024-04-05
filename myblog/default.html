@@ -327,53 +327,53 @@ By following these steps, you can create a free website that allows users to upl
                 var finalTime = results[i][headers[headers.length - 1]].replace(/\r$/, '');
 
                 var swim = convertToSeconds(results[i]["Swim"]);
-                if (swim > 1) {
+                if (swim != 0) {
                     if (swim < fastestSplits[0]) {
                         fastestSplits[0] = swim;
                     } else if (swim > slowestSplits[0]) {
                         slowestSplits[0] = swim;
                     }
-                } else { swim = errorResult; }
+                }
                 var t1 = convertToSeconds(results[i]["T1"]);
-                var t1_abs = t1;
-                if (t1 > 1) {
+                const t1_abs = t1;
+                if (t1 != 0) {
                     t1 += swim;
                     if (t1_abs < fastestSplits[1]) {
                         fastestSplits[1] = t1_abs;
                     } else if (t1_abs > slowestSplits[1]) {
                         slowestSplits[1] = t1_abs;
                     }
-                } else { t1 = errorResult; t1_abs = errorResult; }
+                }
                 var bike = convertToSeconds(results[i]["Bike"]);
-                var bike_abs = bike;
-                if (bike > 1) {
+                const bike_abs = bike;
+                if (bike != 0) {
                     bike += t1;
                     if (bike_abs < fastestSplits[2]) {
                         fastestSplits[2] = bike_abs;
                     } else if (bike_abs > slowestSplits[2]) {
                         slowestSplits[2] = bike_abs;
                     }
-                } else { bike = errorResult; bike_abs = errorResult; }
+                }
                 var t2 = convertToSeconds(results[i]["T2"]);
-                var t2_abs = t2;
-                if (t2 > 1) {
+                const t2_abs = t2;
+                if (t2 != 0) {
                     t2 += bike;
                     if (t2_abs < fastestSplits[3]) {
                         fastestSplits[3] = t2_abs;
                     } else if (t2_abs > slowestSplits[3]) {
                         slowestSplits[3] = t2_abs;
                     }
-                }else { t2 = errorResult; t2_abs = errorResult; }
+                }
                 var run = convertToSeconds(results[i]["Run"]);
-                var run_abs = run;
-                if (run > 1) {
+                const run_abs = run;
+                if (run != 0) {
                     run += t2;
                     if (run_abs < fastestSplits[4]) {
                         fastestSplits[4] = run_abs;
                     } else if (run_abs > slowestSplits[4]) {
                         slowestSplits[4] = run_abs;
                     }
-                } else { run = errorResult; run_abs = errorResult; }
+                }
                 var finalTimeInSeconds = convertToSeconds(finalTime);
                 if (Math.abs(finalTimeInSeconds - run) > 5) {
                     problemIndexArray.push(i)
@@ -434,11 +434,10 @@ By following these steps, you can create a free website that allows users to upl
             normalizeResults(fastestSplits, slowestSplits, spiderChartArray);
             var problemString = "";
             if (problemIndexArray.length > 0) {
-                
+
                 problemString = "There were issues with the following " + problemIndexArray.length + " athlete results:<ul>"
 
                 for (let i = 0; i < problemIndexArray.length; i++) {
-                    console.log("prob", athletesArray[problemIndexArray[i]]);
                     if (athletesArray[problemIndexArray[i]].status == "") {
                         problemString += "<li>" + athletesArray[problemIndexArray[i]].athleteName + "</li>";
                         athletesArray[problemIndexArray[i]].athleteName += "***";
