@@ -217,8 +217,8 @@ function drawChart(athletesArray, max_time_lag, spiderChartArray) {
 // nonfinisherAthletes.sort((a, b) => a.runSplit - b.runSplit);
 
 
-//         // Filter out athletes with status other than finished = ""
-//         const finishedAthletes = athletesArray.filter(athlete => athlete.status === "");
+        // Filter out athletes with status other than finished = ""
+        var finishedAthletes = athletesArray.filter(athlete => athlete.status === "");
 
         // Sort athletes by discipline
         const sortedBySwim = athletesArray.slice().sort((a, b) => a['swim'] - b['swim']);
@@ -238,13 +238,32 @@ function drawChart(athletesArray, max_time_lag, spiderChartArray) {
             const t2Rank = athlete.t2 === 0 ? athletesArray.length + 1 : sortedByT2.findIndex((sortedAthlete) => sortedAthlete === athlete) + 1;
             // Find athlete rank for run
             const runRank = athlete.run === 0 ? athletesArray.length + 1 : sortedByRun.findIndex((sortedAthlete) => sortedAthlete === athlete) + 1;
-
+            const finishRank = parseInt(athlete.position);
             // Add ranks to athlete object
             athlete.swim_rank = swimRank;
             athlete.t1_rank = t1Rank;
             athlete.bike_rank = bikeRank;
             athlete.t2_rank = t2Rank;
             athlete.run_rank = runRank;
+            if (athlete.status === ""){
+                athlete.finish_rank = finishRank;
+            // } else if (athlete.status === "DNF"){
+            //     athlete.finish_rank = finishedAthletes;
+            // } else if (athlete.status === "LAP"){
+            //     athlete.finish_rank = finishedAthletes;
+            // } else if (athlete.status === "DSQ"){
+            //     athlete.finish_rank = finishedAthletes;
+            // } else if (athlete.status === "DNS"){
+            //     athlete.finish_rank = finishedAthletes;
+            // } else {
+                //athlete.finish_rank = finishedAthletes;
+            }
+            finishedAthletes++;
+            // //make sure the runrank is equal to the final position 
+            // if (athlete.run_rank != parseInt(athlete.position)){
+            //     athlete.run_rank = ;
+            //     athlete.run_rank = 
+            // }
             //console.log("athlete", athlete);
         });
         drawRankChart(athletesArray, colorPalette);

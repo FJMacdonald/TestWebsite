@@ -1,6 +1,7 @@
 function drawRankChart(athletesData, colorPalette) {
     console.log("draw rank chart");
-    console.log(athletesData);
+    console.log("rank chart data", athletesData);
+
 
     // Define chart dimensions
     const margin = { top: 20, right: 30, bottom: 20, left: 10 };
@@ -58,6 +59,7 @@ function drawRankChart(athletesData, colorPalette) {
         .attr('class', 'athlete-line')
         .attr('d', d => {
            // if (d.status == '') {
+            console.log(d);
                 const startX = sectionEnds[0];//start
                 const startY = yScale(d.swim_rank);
                 const swimX = sectionEnds[1];//swim
@@ -71,7 +73,7 @@ function drawRankChart(athletesData, colorPalette) {
                 const runX = sectionEnds[5];//run
                 const runY = yScale(d.run_rank);
                 const finishX = sectionEnds[6];
-                const finishY = yScale(d.run_rank);
+                const finishY = yScale(d.finish_rank);
 
                 return `M${startX},${startY} L${swimX},${swimY} L${t1X},${t1Y} L${bikeX},${bikeY} L${t2X},${t2Y} L${runX},${runY} L${finishX},${finishY}`;
            // }
@@ -142,7 +144,7 @@ function drawRankChart(athletesData, colorPalette) {
         .attr('class', 'label athlete-label')
         .attr('id', d => `athlete-label-${d.athleteName.replace(/\s/g, '')}`) // Add unique IDs to the labels    
         .attr('x', xScale(5.8))
-        .attr('y', d => yScale(d.run_rank))
+        .attr('y', d => yScale(d.finish_rank))
         .attr('dy', '0.35em')
         .text(d => d.athleteName + " " + d.status)
         .attr('fill', (d, i) => colorPalette[i])
