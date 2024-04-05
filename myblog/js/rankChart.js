@@ -57,7 +57,7 @@ function drawRankChart(athletesData, colorPalette) {
         .append('path')
         .attr('class', 'athlete-line')
         .attr('d', d => {
-            if (d.status == '') {
+           // if (d.status == '') {
                 const startX = sectionEnds[0];//start
                 const startY = yScale(d.swim_rank);
                 const swimX = sectionEnds[1];//swim
@@ -74,7 +74,7 @@ function drawRankChart(athletesData, colorPalette) {
                 const finishY = yScale(d.run_rank);
 
                 return `M${startX},${startY} L${swimX},${swimY} L${t1X},${t1Y} L${bikeX},${bikeY} L${t2X},${t2Y} L${runX},${runY} L${finishX},${finishY}`;
-            }
+           // }
         })
         .attr('stroke', (d, i) => colorPalette[i])
         .attr('stroke-width', 2)
@@ -144,7 +144,7 @@ function drawRankChart(athletesData, colorPalette) {
         .attr('x', xScale(5.8))
         .attr('y', d => yScale(d.run_rank))
         .attr('dy', '0.35em')
-        .text(d => d.status != '' ? '' : d.athleteName)
+        .text(d => d.athleteName + " " + d.status)
         .attr('fill', (d, i) => colorPalette[i])
     // .style('font-size', '14px');
 

@@ -3,11 +3,9 @@ var brushingEnabled = true;
 
 
 // Draws the chart
-function drawChart(athletesArray, leadersArray, spiderChartArray) {
+function drawChart(athletesArray, max_time_lag, spiderChartArray) {
 
-    // console.log(athletesArray);
-    // console.log(leadersArray);
-    // console.log(spiderChartArray);
+
     let chartTitleDiv = document.getElementById("devchart_title");
 
     // Update the inner HTML of the div with the new title
@@ -178,28 +176,68 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
 
     calculateRankings();
     // Function to calculate rankings for each discipline
+
     function calculateRankings() {
-        // Filter out athletes with status other than finished = ""
-        const finishedAthletes = athletesArray.filter(athlete => athlete.status === "");
+        const nonfinisherAthletes = athletesArray.filter(athlete => athlete.status != "");
+        console.log("non finishers", nonfinisherAthletes);
+//         // Filter out athletes with status other than finished = ""
+//         const nonfinisherAthletes = athletesArray.filter(athlete => athlete.status != "");
+//         //sort non finishers by status
+//         const lappedAthletes 
+//         const nonfinisherBySwim = nonfinisherAthletes.slice().sort((a, b) => a['swim'] - b['swim']);
+//         const nonfinisherByT1 = nonfinisherAthletes.slice().sort((a, b) => a['t1'] - b['t1']);
+//         const nonfinisherByBike = nonfinisherAthletes.slice().sort((a, b) => a['bike'] - b['bike']);
+//         const nonfinisherByT2 = nonfinisherAthletes.slice().sort((a, b) => a['t2'] - b['t2']);
+//         const nonfinisherByRun = nonfinisherAthletes.slice().sort((a, b) => a['run'] - b['run']);
+//         console.log("byswim", nonfinisherBySwim)
+//         console.log("byt1", nonfinisherByT1)
+//         console.log("bybike", nonfinisherByBike)
+//         console.log("byt2", nonfinisherByT2)
+//         console.log("byrun", nonfinisherByRun)
+//         // nonfinisherAthletes.forEach((athlete) => {
+//         //     const nonfinishers = nonfinisherAthletes.length;
+//         //     // Adjust splits time based on status
+//         //     switch (athlete.status) {
+//         //         case "DNF":
+//         //             // Adjust run split based on the portion completed before DNF
+//         //             athlete.runSplit = calculateRunSplitForDNF(athlete); // Implement this function
+//         //             break;
+//         //         case "LAP":
+//         //             // Adjust run split based on lap time or portion completed
+//         //             athlete.runSplit = calculateRunSplitForLAP(athlete); // Implement this function
+//         //             break;
+//         //         // For DSQ and DNS, no adjustment needed as they don't have run times
+//         //         default:
+//         //             break;
+//         //     }
+            
+//         // });
+
+// // Sort non-finisher athletes array based on adjusted run split time
+// nonfinisherAthletes.sort((a, b) => a.runSplit - b.runSplit);
+
+
+//         // Filter out athletes with status other than finished = ""
+//         const finishedAthletes = athletesArray.filter(athlete => athlete.status === "");
 
         // Sort athletes by discipline
-        const sortedBySwim = finishedAthletes.slice().sort((a, b) => a['swim'] - b['swim']);
-        const sortedByT1 = finishedAthletes.slice().sort((a, b) => a['t1'] - b['t1']);
-        const sortedByBike = finishedAthletes.slice().sort((a, b) => a['bike'] - b['bike']);
-        const sortedByT2 = finishedAthletes.slice().sort((a, b) => a['t2'] - b['t2']);
-        const sortedByRun = finishedAthletes.slice().sort((a, b) => a['run'] - b['run']);
+        const sortedBySwim = athletesArray.slice().sort((a, b) => a['swim'] - b['swim']);
+        const sortedByT1 = athletesArray.slice().sort((a, b) => a['t1'] - b['t1']);
+        const sortedByBike = athletesArray.slice().sort((a, b) => a['bike'] - b['bike']);
+        const sortedByT2 = athletesArray.slice().sort((a, b) => a['t2'] - b['t2']);
+        const sortedByRun = athletesArray.slice().sort((a, b) => a['run'] - b['run']);
         // Calculate ranking for each athlete
-        finishedAthletes.forEach((athlete) => {
+        athletesArray.forEach((athlete) => {
             // Find athlete rank for swim
-            const swimRank = athlete.swim === 0 ? finishedAthletes.length + 1 : sortedBySwim.findIndex((sortedAthlete) => sortedAthlete === athlete) + 1;
+            const swimRank = athlete.swim === 0 ? athletesArray.length + 1 : sortedBySwim.findIndex((sortedAthlete) => sortedAthlete === athlete) + 1;
             // Find athlete rank for t1
-            const t1Rank = athlete.t1 === 0 ? finishedAthletes.length + 1 : sortedByT1.findIndex((sortedAthlete) => sortedAthlete === athlete) + 1;
+            const t1Rank = athlete.t1 === 0 ? athletesArray.length + 1 : sortedByT1.findIndex((sortedAthlete) => sortedAthlete === athlete) + 1;
             // Find athlete rank for bike
-            const bikeRank = athlete.bike === 0 ? finishedAthletes.length + 1 : sortedByBike.findIndex((sortedAthlete) => sortedAthlete === athlete) + 1;
+            const bikeRank = athlete.bike === 0 ? athletesArray.length + 1 : sortedByBike.findIndex((sortedAthlete) => sortedAthlete === athlete) + 1;
             // Find athlete rank for t2
-            const t2Rank = athlete.t2 === 0 ? finishedAthletes.length + 1 : sortedByT2.findIndex((sortedAthlete) => sortedAthlete === athlete) + 1;
+            const t2Rank = athlete.t2 === 0 ? athletesArray.length + 1 : sortedByT2.findIndex((sortedAthlete) => sortedAthlete === athlete) + 1;
             // Find athlete rank for run
-            const runRank = athlete.run === 0 ? finishedAthletes.length + 1 : sortedByRun.findIndex((sortedAthlete) => sortedAthlete === athlete) + 1;
+            const runRank = athlete.run === 0 ? athletesArray.length + 1 : sortedByRun.findIndex((sortedAthlete) => sortedAthlete === athlete) + 1;
 
             // Add ranks to athlete object
             athlete.swim_rank = swimRank;
@@ -243,72 +281,12 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
 
     const duration = 300; //To calibrate all races to proportions of swim=10, t=2, bike=30, run=20
     const raceLength = 70;
-    var max_time_lag = 0;
 
-    const resultsArray = [];
+
     var athleteIndexArray = [];
-    for (let i = 0; i < athletesArray.length; i++) {
-        const runDiff = athletesArray[i].run - leadersArray[4];
-
-        if (runDiff > max_time_lag) {
-            max_time_lag = runDiff;
-        }
-        //check for lapped out or dnf
-        if (athletesArray[i].status != "") {
-            if (athletesArray[i].swim < 1.0) {
-                athletesArray[i].swim = 0;
-            }
-            else if (athletesArray[i].t1 < 1.0) {
-                athletesArray[i].t1 = errorResult;
-                athletesArray[i].bike = errorResult;
-                athletesArray[i].t2 = errorResult;
-                athletesArray[i].run = errorResult;
-            }
-            else if (athletesArray[i].bike < 1.0) {
-                athletesArray[i].bike = errorResult;
-                athletesArray[i].t2 = errorResult;
-                athletesArray[i].run = errorResult;
-            }
-            else if (athletesArray[i].t2 < 1.0) {
-                athletesArray[i].t2 = errorResult;
-                athletesArray[i].run = errorResult;
-            }
-            else if (athletesArray[i].run < 1.0) {
-                athletesArray[i].run = errorResult;
-            }
-        }
-        var values = [];
-        if (athletesArray[i].status == "DNS") {
-            values = [{ "x": 0, "y": 0, "diff": "" },
-            { "x": 0, "y": 0, "diff": "" }, { "x": 0, "y": 0, "diff": "" },
-            { "x": 0, "y": 0, "diff": "" }, { "x": 0, "y": 0, "diff": "" }];
-        } else {
-            values = [{ "x": 0, "y": 0, "diff": convertToMinutes(0) },
-            { "x": 10, "y": leadersArray[0] - athletesArray[i].swim, "diff": convertToMinutes(athletesArray[i].swim - leadersArray[0]) },
-            { "x": 12, "y": leadersArray[1] - athletesArray[i].t1, "diff": convertToMinutes(athletesArray[i].t1 - leadersArray[1]) },
-            { "x": 42, "y": leadersArray[2] - athletesArray[i].bike, "diff": convertToMinutes(athletesArray[i].bike - leadersArray[2]) },
-            { "x": 44, "y": leadersArray[3] - athletesArray[i].t2, "diff": convertToMinutes(athletesArray[i].t2 - leadersArray[3]) },
-            { "x": 64, "y": leadersArray[4] - athletesArray[i].run, "diff": convertToMinutes(athletesArray[i].run - leadersArray[4]) }];
-        }
-        resultsArray.push({
-            athleteName: athletesArray[i].athleteName,
-            position: athletesArray[i].position,
-            status: athletesArray[i].status,
-            country: getCountryFlagEmoji(athletesArray[i].country),
-            values: values,
-        });
-    }
+    
     // console.log("resultsArray", resultsArray);
 
-    //This function takes an input time in seconds, calculates the minutes and remaining 
-    //seconds, and formats them as "minutes:seconds". It also ensures that single-digit 
-    //seconds are padded with a leading zero.
-    function convertToMinutes(timeInSeconds) {
-        const minutes = Math.floor(timeInSeconds / 60);
-        const seconds = Math.floor(timeInSeconds % 60);
-        const formattedTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-        return formattedTime;
-    }
 
 
 
