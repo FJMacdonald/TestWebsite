@@ -74,81 +74,100 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
     displayTooltip(resetButton, "click this button to return to unzoomed chart");
 
     //https://coolors.co/palettes/trending
-    const colorPalette = ["#FF204E",
-        "#A0153E",
-        "#5D0E41",
-        "#00224D",
-        "#5356FF",
-        "#378CE7",
-        "#67C6E3",
-        "#606c38", //olive
-        "#283618", //dark green
-        "#dda15e", //beige
-        "#bc6c25", //orange brown
-        "#cdb4db", //lilac
-        "#ffafcc", //pink
-        "#a2d2ff", //sky bllue
-        "#0077b6", //blue
-        "#00b4d8", //turquoise
-        "#7FDBFF", // Azure
-        "#ffb703", //light orange
-        "#fb8500", // dark orange
-        "#2a9d8f", // green blue
-        "#264653", // steel blue
-        "#84a59d", // grey green
-        "#f4a261", // peach
-        "#e76f51", // brick
-        "#8d99ae", // grey
-        "#ff006e", //  bright pink
-        "#8338ec", // purple
-        "#84a98c", // light olive
-        "#52796f", // darker olive
-        "#9d8189", //mauve
-        "#e5989b", // pinkish
-        "#ffb4a2", // orange pink
-        "#ffb4a2", // brown
-        "#03045e", // navy
-        "#023e8a", // blue
-        "#0077b6", // blue
-        "#0096c7", // blue
-        "#00b4d8", // blue
-        "#48cae4", // blue
-        "#4a4e69", // dark grey
-        "#9a8c98", // light grey
-        "#c9ada7", // beige
-        "#386641", // green
-        "#6a994e", // green
-        "#a7c957", // green
-        "#38b000", // green
-        "#70e000", // green
-        "#f72585", // mag
-        "#b5179e", // mag2
-        "#7209b7", // purp
-        "#3a0ca3", // purp
-        "#3f37c9", // purp
-        "#4361ee", // blue
-        "#4895ef", //  blue
-        "#4cc9f0", // blue
-        "#01FF70", // Lime
-        "#FF4136", // Scarlet
-        "#FFDC00", // Yellow
-        "#0074D9", // Cerulean
+    const colorPalette = [
+        "#094E62", // Turquoise Darker
+        "#1100BB", // Blue
+        "#221177", // Blue
+        "#4361ee", // Blue
+        "#416289", // Turquoise
+        // Reds dark->pale almost brown to pink
+        "#6B0000",
+        "#FE4D4D", // Red (Last)
+        "#DB0000",
+        "#FE8484",
+        // Orange brown->yellow-orange
+        "#A55200",
+        "#DB6D00",
+        "#FE9227",
+        // Yellow
+        "#FFBA00",
+        "#FFD800",
+        // Green
+        "#11772D",
+        "#30AD23",
+        "#3ED715",
+        "#75DB1B",
+        "#05E177",
+        // Purple
+        "#430064",
+        "#7300AB",
+        "#AE1AF7",
+        "#D37AFF",
+        // Pink
+        "#AF005F",
+        "#F60B8A",
+        // Brown
+        "#662800",
+        "#AB6634",
+        "#DE9967",
+        // Grey
+        "#363636",
+        "#9C9C9C",
+        "#BEBEBE",
+        //blue
+        "#48cae4", // Blue
+        "#5588EE", // Blue
+        "#0077b6", // Blue2
+        "#00b4d8", // Turquoise
+        "#2AA1B7", // Turquoise
+        "#0033EE", // Blue (Last) 
+        // reds
+        "#8B0000", // DarkRed
+        "#FF0000", // Red
+        "#FF6347", // Tomato
+        "#FF4500", // OrangeRed
+        //olive green
+        "#283618", // Dark Olive Green
+        "#606c38", // Olive Green
+        "#84a98c", // Light Olive Green
+        "#a7c957", // Pale Olive Green
+        //pink
+        "#FFC0CB", // Pink
+        "#FF69B4", // HotPink
+        "#FF1493", // DeepPink
+        //blue
+        "#48cae4", // Blue
+        "#486d83", // Teal
+        "#5356FF", // RoyalBlue
+        "#5588EE", // Blue
         "#FFD700", // Gold
-        "#AAAAAA", // Grey
-        "#2ECC40", // Green
-        "#7FDBFF", // Azure
-        "#F012BE", // Magenta
-        "#111111", // Black
-        "#B10DC9", // Electric Purple
-        "#01FF70", // Lime
-        "#FF6B81", // Blush
-        "#FFDC00", // Yellow
-        "#FF4136", // Scarlet
-        "#3D9970", // Emerald
-        "#0074D9", // Cerulean
-        "#FF851B", // Orange
-        "#AAAAAA", // Grey
-        "#FF5733"  // Red
+        "#FFA500", // Orange
+        "#FF8C00", // DarkOrange
+        "#FF4500", // OrangeRed
+        //blue
+        "#0096c7", // Blue4
+        "#0077b6", // Blue2
+        "#a2d2ff", // SkyBlue2
+        "#4895ef", // Blue
+        "#00b4d8", // Turquoise
+        "#264653", // SteelBlue (Second Last)
+        //grey green
+        "#556B2F", // DarkOliveGreen
+        "#8FBC8F", // DarkSeaGreen
+        "#9ACD32", // YellowGreen
+        "#808080", // Gray
+        //blue
+        "#094E62", // Turquoise (Darker)
+        "#0E82B0", // Turquoise
+        "#1100BB", // Blue
+        "#2a9d8f", // GreenBlue
+        "#4361ee", // Blue
+        "#4422EE", // Blue
+        //yellow green 
+        "#556B2F", // DarkOliveGreen
+        "#6B8E23", // OliveDrab
+        "#ADFF2F", // GreenYellow
+        "#9ACD32", // YellowGreen
     ];
     // ].map(color => darken(color));
 
