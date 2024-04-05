@@ -10,10 +10,7 @@ function drawRankChart(athletesData, colorPalette) {
     //get the section lengths 
     const sectionLength = width / 8;
 
-    let chartTitleDiv = document.getElementById("rankchart_title");
 
-    // Update the inner HTML of the div with the new title
-    chartTitleDiv.innerHTML = "<h3> Rank Chart </h3>";
 
     d3.select("#rank_chart").selectAll('*').remove();
     var svg = d3.select("#rank_chart")

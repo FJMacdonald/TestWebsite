@@ -8,7 +8,11 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
     // console.log(athletesArray);
     // console.log(leadersArray);
     // console.log(spiderChartArray);
-    
+    let chartTitleDiv = document.getElementById("devchart_title");
+
+    // Update the inner HTML of the div with the new title
+    chartTitleDiv.innerHTML = "<h3> Race Development Chart </h3>";
+
 
 
     if (athletesArray.length == 0) {
@@ -68,8 +72,8 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
 
     // Display tooltip explaining zoom button's use
     displayTooltip(resetButton, "click this button to return to unzoomed chart");
-    
-//https://coolors.co/palettes/trending
+
+    //https://coolors.co/palettes/trending
     const colorPalette = ["#FF204E",
         "#A0153E",
         "#5D0E41",
@@ -177,7 +181,7 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
             const t2Rank = athlete.t2 === 0 ? finishedAthletes.length + 1 : sortedByT2.findIndex((sortedAthlete) => sortedAthlete === athlete) + 1;
             // Find athlete rank for run
             const runRank = athlete.run === 0 ? finishedAthletes.length + 1 : sortedByRun.findIndex((sortedAthlete) => sortedAthlete === athlete) + 1;
-     
+
             // Add ranks to athlete object
             athlete.swim_rank = swimRank;
             athlete.t1_rank = t1Rank;
@@ -187,7 +191,7 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
             //console.log("athlete", athlete);
         });
         drawRankChart(athletesArray, colorPalette);
-     
+
         // Return the updated athletesArray
         return athletesArray;
     }
@@ -712,50 +716,66 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
         // Render legend initially
         renderLegend();
 
-
-
-        //Draw path
-        svg.selectAll("path")
+        // Grouping elements for each athlete
+        const athleteGroups = svg.selectAll(".athlete-group")
             .data(resultsArray)
-            .join("path")
-            .attr("class", "line")
+            .enter()
+            .append("g")
+            .attr("class", "athlete-group");
+
+
+        // Draw path for each athlete
+        athleteGroups.append("path")
+            .attr("class", "line athlete-line")
+            .attr("id", (d, i) => i)
             .attr("fill", "none")
-            .attr("stroke", function (d, i) { return colorPalette[i]; })
+            .attr("stroke", (d, i) => colorPalette[i])
             .attr("stroke-width", lineStroke)
-            .attr("d", function (d) { // Generate path 'd' attribute based on coordinates
-                return d3.line()
-                    .x(function (d) { return xScale(d.x); }) // Access x coordinate
-                    .y(function (d) { return yScale(d.y); }) // Access y coordinate
-                    .curve(d3.curveLinear) // Use linear curve
-                    (d.values); // Pass coordinates array
-            })
+            .attr("d", d => d3.line()
+                .x(coord => xScale(coord.x))
+                .y(coord => yScale(coord.y))
+                .curve(d3.curveLinear)(d.values))
             .style('opacity', lineOpacity)
             .attr("clip-path", "url(#clip)")
             .on("mouseover", function (d, i) {
-                //remove any previous athlete name
-                svg.select(".line-text").remove();
+                var athleteLine = d3.select(this);
+                athleteLine.attr("stroke-width", 4)
+                    .style('opacity', 1.0);
+
+
                 // get the current mouse position 
                 const [mouseX, mouseY] = d3.pointer(event, this);
-                // Get the index of the current path
-                const index = resultsArray.indexOf(i);
-
                 svg.append("text")
                     .attr("class", "line-text label")
-                    .style("fill", colorPalette[index])
+                    //   .style("fill", colorPalette[index])
                     .text(i.athleteName)
                     .attr("x", mouseX)
                     .attr("y", mouseY);
+            })
+            .on("mouseout", function (d, i) {
+                const athleteLine = d3.select(this);
+                const athleteIndex = parseInt(athleteLine.attr("id"));
+
+                svg.select(".line-text").remove();
+
+
+
+
+                // Check if the athlete is selected
+                var isSelected = athleteIndexArray.includes(athleteIndex);
+                if (!isSelected) {
+                    athleteLine.attr("stroke-width", 1)
+                        .style('opacity', 0.5);
+                }
+
             });
-        //Draw circles at path coordinates
-        svg.selectAll("circle")
-            .data(resultsArray)
-            .enter()
-            .selectAll("circle")
+
+        // Draw circles for each athlete
+        athleteGroups.selectAll(".athlete-circle")
             .data((d, i) => d.values.map(coord => ({ athleteIndex: i, coordinate: coord })))
             .enter()
             .append("circle")
             .attr("class", "athlete-circle")
-            .attr("athlete", d => d.athleteName)
             .attr("r", circleRadius)
             .style("opacity", lineOpacity)
             .attr("fill", d => colorPalette[d.athleteIndex])
@@ -783,20 +803,20 @@ function drawChart(athletesArray, leadersArray, spiderChartArray) {
                 svg
                     .selectAll(".text").remove();
             });
-        //Label paths with athlete first names
-        svg.selectAll("text.line-name")
-            .data(resultsArray)
-            .enter()
-            .append("text")
-            .attr("class", "line-name label")
-            .style("fill", (d, i) => colorPalette[i]) // Color based on athlete index
-            .text(d => d.athleteName.split(' ')[0]) // Display athlete's name
-            .attr("text-anchor", "end") // Anchor text to the end of the path
-            .attr("x", width - 100)
-            .attr("y", d => yScale(d.values[d.values.length - 1].y)) // Y position based on the last y-coordinate
+
+        // Label paths with athlete first names
+        athleteGroups.append("text")
+            .attr("class", "line-name label athlete-name")
+            .style("fill", (d, i) => colorPalette[i])
+            .text(d => d.athleteName.split(' ')[0])
+            .attr("text-anchor", "end")
+            .attr("x", d => xScale(d.values[d.values.length - 1].x) + 5)
+            .attr("y", d => yScale(d.values[d.values.length - 1].y))
             .attr("clip-path", "url(#clip-labels)")
             .style("visibility", "hidden")
-            .attr("text-anchor", "left"); // for some reason still need to define this
+            .attr("text-anchor", "left");
+
+
 
 
         // Define clipping path for lines

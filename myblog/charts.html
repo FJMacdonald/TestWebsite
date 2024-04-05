@@ -28,8 +28,9 @@
 
     <!-- Create a div where the graph will take place -->
     <div id="chart_title"></div>
-        
+    <div id="rank_chart" style="width: 100%;"></div>        
     <!-- Reset button -->
+    <div id="devchart_title"></div>
     <button id="resetButton" class="button" style="display: none;">Reset</button>
     <!-- Reset button -->
     <button id="zoomButton" class="button" style="display: none;">Zoom</button>
@@ -45,8 +46,8 @@
     <div id="legend-dots"></div>
     <div id="spiderchart_title"></div>
     <div id="spider_chart" style="width: 100%;"></div>
-    <div id="rankchart_title"></div>
-    <div id="rank_chart" style="width: 100%;"></div>
+
+
     <script src="https://d3js.org/d3-color.v1.min.js"> </script>
     <script src="https://d3js.org/d3-interpolate.v1.min.js"> </script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"> </script>
@@ -69,9 +70,9 @@
 
 
         const chartTitle = document.getElementById('chart_title');
-        chartTitle.innerHTML = title;
-        chartTitle.style = "font-size: 3.2vw";
-        chartTitle.style.textAlign = "center";
+        chartTitle.innerHTML = "<h3>" + title + "</h3>";
+        // chartTitle.style = "font-size: 3.2vw";
+        // chartTitle.style.textAlign = "center";
 
 
         if (problemString){
