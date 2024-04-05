@@ -180,46 +180,10 @@ function drawChart(athletesArray, max_time_lag, spiderChartArray) {
     function calculateRankings() {
         const nonfinisherAthletes = athletesArray.filter(athlete => athlete.status != "");
         console.log("non finishers", nonfinisherAthletes);
-//         // Filter out athletes with status other than finished = ""
-//         const nonfinisherAthletes = athletesArray.filter(athlete => athlete.status != "");
-//         //sort non finishers by status
-//         const lappedAthletes 
-//         const nonfinisherBySwim = nonfinisherAthletes.slice().sort((a, b) => a['swim'] - b['swim']);
-//         const nonfinisherByT1 = nonfinisherAthletes.slice().sort((a, b) => a['t1'] - b['t1']);
-//         const nonfinisherByBike = nonfinisherAthletes.slice().sort((a, b) => a['bike'] - b['bike']);
-//         const nonfinisherByT2 = nonfinisherAthletes.slice().sort((a, b) => a['t2'] - b['t2']);
-//         const nonfinisherByRun = nonfinisherAthletes.slice().sort((a, b) => a['run'] - b['run']);
-//         console.log("byswim", nonfinisherBySwim)
-//         console.log("byt1", nonfinisherByT1)
-//         console.log("bybike", nonfinisherByBike)
-//         console.log("byt2", nonfinisherByT2)
-//         console.log("byrun", nonfinisherByRun)
-//         // nonfinisherAthletes.forEach((athlete) => {
-//         //     const nonfinishers = nonfinisherAthletes.length;
-//         //     // Adjust splits time based on status
-//         //     switch (athlete.status) {
-//         //         case "DNF":
-//         //             // Adjust run split based on the portion completed before DNF
-//         //             athlete.runSplit = calculateRunSplitForDNF(athlete); // Implement this function
-//         //             break;
-//         //         case "LAP":
-//         //             // Adjust run split based on lap time or portion completed
-//         //             athlete.runSplit = calculateRunSplitForLAP(athlete); // Implement this function
-//         //             break;
-//         //         // For DSQ and DNS, no adjustment needed as they don't have run times
-//         //         default:
-//         //             break;
-//         //     }
-            
-//         // });
-
-// // Sort non-finisher athletes array based on adjusted run split time
-// nonfinisherAthletes.sort((a, b) => a.runSplit - b.runSplit);
-
 
         // Filter out athletes with status other than finished = ""
         var finishedAthletes = athletesArray.filter(athlete => athlete.status === "");
-
+        var nFinishedAthletes = finishedAthletes.length + 1;
         // Sort athletes by discipline
         const sortedBySwim = athletesArray.slice().sort((a, b) => a['swim'] - b['swim']);
         const sortedByT1 = athletesArray.slice().sort((a, b) => a['t1'] - b['t1']);
@@ -247,24 +211,11 @@ function drawChart(athletesArray, max_time_lag, spiderChartArray) {
             athlete.run_rank = runRank;
             if (athlete.status === ""){
                 athlete.finish_rank = finishRank;
-            // } else if (athlete.status === "DNF"){
-            //     athlete.finish_rank = finishedAthletes;
-            // } else if (athlete.status === "LAP"){
-            //     athlete.finish_rank = finishedAthletes;
-            // } else if (athlete.status === "DSQ"){
-            //     athlete.finish_rank = finishedAthletes;
-            // } else if (athlete.status === "DNS"){
-            //     athlete.finish_rank = finishedAthletes;
-            // } else {
-                //athlete.finish_rank = finishedAthletes;
-            }
-            finishedAthletes++;
-            // //make sure the runrank is equal to the final position 
-            // if (athlete.run_rank != parseInt(athlete.position)){
-            //     athlete.run_rank = ;
-            //     athlete.run_rank = 
-            // }
-            //console.log("athlete", athlete);
+             } else {
+                athlete.finish_rank = nFinishedAthletes;
+                nFinishedAthletes++;
+             }
+
         });
         drawRankChart(athletesArray, colorPalette);
 
