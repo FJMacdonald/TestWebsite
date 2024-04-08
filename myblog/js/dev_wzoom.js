@@ -1,78 +1,242 @@
+// const errorResult = 99999;
+var brushingEnabled = true;
 
-let zoomingEnabled = true;
 
-// function isTouchDevice() {
-//     return 'ontouchstart' in window || navigator.maxTouchPoints;
-// }
+//rectangles in the legend (athletes + teams)
+///nRects = athletesArray.length
+const clientWidth = window.innerWidth;
+const clientHeight = window.innerHeight;
 
-// if (isTouchDevice()) {
-//     const zoomButton = d3.select("#zoomButton");
-//     zoomButton.style("display", "inline-block");
-//     zoomButton.on("click", toggleBrushing);
-//     displayTooltip(zoomButton, "Tap this button to enable zooming mode");
-// }
-const height = window.innerHeight * 0.5;
-var max_time_lag = 10*60;
+// Define the size and spacing of the rectangles
+const size = 25;
+const bottom = 10;
+var lineOpacity = "0.5";
+var lineStroke = "1.0";
 
+var circleRadius = 3;
+const circleRadiusHover = 6;
+
+// set the dimensions and margins of the graph
+var margin = { top: 40, right: 10, bottom: bottom, left: clientWidth / 14 },
+    width = clientWidth - margin.left - margin.right,
+    height = 0.5 * clientHeight;
+// append the svg object to the body of the page
+svg = d3.select("#development_chart")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+// Draws the chart
 function drawChart(athletesArray, max_time_lag, spiderChartArray, colorPalette) {
-    const chartTitleDiv = document.getElementById("devchart_title");
+
+
+    let chartTitleDiv = document.getElementById("devchart_title");
+
+    // Update the inner HTML of the div with the new title
     chartTitleDiv.innerHTML = "<h3> Race Development Chart </h3>";
 
-    if (athletesArray.length === 0) {
-        return;
+
+
+    if (athletesArray.length == 0) {
+        return
     }
 
 
 
-    const duration = 300;
+
+    var resetButton = d3.select("#resetButton");
+    // Add a click event listener to the reset button
+    resetButton.on("click", resetChart);
+
+    var zoomInButton = d3.select("#zoomInButton");
+    // Add a click event listener to the zoom in button
+    zoomInButton.on("click", zoomInOnChart);
+
+    var zoomOutButton = d3.select("#zoomOutButton");
+    // Add a click event listener to the zoom out button
+    zoomOutButton.on("click", zoomOutOnChart);
+
+    var panUpButton = d3.select("#panUpButton");
+    // Add a click event listener to the pan up button
+    panUpButton.on("click", panUpOnChart);
+
+    var panDownButton = d3.select("#panDownButton");
+    // Add a click event listener to the pan up button
+    panDownButton.on("click", panDownOnChart);
+
+
+    // Function to reset the chart
+    function resetChart() {
+
+        // Reset the y-axis scale to its original domain
+        yScale.domain([-max_time_lag, 0]);
+
+        // Update the y-axis
+        svg.select(".y.axis").call(yAxis);
+
+        // Update the lines and circles based on the original yScale
+        updateLinesAndCircles();
+        //Update Y-axis
+        updateYAxis();
+
+    }
+
+    const duration = 300; //To calibrate all races to proportions of swim=10, t=2, bike=30, run=20
     const raceLength = 70;
-    const margin = { top: 40, right: 10, bottom: 10, left: window.innerWidth / 14 };
-    const width = window.innerWidth - margin.left - margin.right;
 
-    const size = 25;
-    const circleRadiusHover = 6;
 
-    var lineOpacity = "0.5";
-    var lineStroke = "1.0";
-    var circleRadius = 3;
     var athleteIndexArray = [];
 
-
-    const svg = d3.select("#development_chart")
-        .append("svg")
+    // Create a rectangle for the frame
+    var frame = svg.append("rect")
+        .attr("x", 0)
+        .attr("y", 0)
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-        .attr("transform", `translate(${margin.left}, ${margin.top})`);
+        .attr("rx", 10)
+        .attr("ry", 10)
+        .attr("stroke", "gray")
+        .attr("opacity", 0.6)
+        .attr("stroke-width", 2)
+        .attr("fill", "transparent")
+        .attr("transform",
+            "translate(-" + margin.left + ",-" + margin.top + ")");
 
-    const xScale = d3.scaleLinear()
-        .domain([0, raceLength])
-        .range([0, width]);
+
+    var xScale = d3.scaleLinear()
+        .domain([0, raceLength]) //assuming a 90min race
+        .range([0, width]); //leaving space for ledgend
 
 
+    // Define the initial yScale
+    const yScale = d3.scaleLinear()
+        .domain([-max_time_lag, 0])
+        .range([height, 0]);
 
-    const xAxis = d3.axisTop(xScale).ticks(0);
-    const yAxis = d3.axisLeft(yScale).ticks(0).tickFormat(formatYAxis);
+    // Define the initial yAxis
+    const yAxis = d3.axisLeft(yScale).ticks(0);
 
+    // Add x-axis
+    var xAxis = d3.axisTop(xScale).ticks(0);
     svg.append("g")
         .attr("class", "x axis")
         .call(xAxis);
 
-    var yAxisGroup = svg.append("g")
+    // Add y-axis
+    svg.append("g")
         .attr("class", "y axis label")
-        .call(yAxis);
-
-    yAxisGroup.append('text')
-        .attr("y", -window.innerWidth / 20)
+        .call(yAxis)
+        .append('text')
+        .attr("y", -clientWidth / 20)
         .attr("x", -10)
         .attr("transform", "rotate(-90)")
         .attr("fill", "#000")
+        // .attr("font-size", "16")
         .text("Time Behind Leader");
 
 
+    // Set the zoom level to cover the desired range on the y-axis
+    function zoomInOnChart() {
+        // Calculate the new y-axis domain to zoom in by 50%
+        var newDomain = yScale.domain().map(value => value * 0.5);
 
+        // Update the y-axis scale domain
+        yScale.domain(newDomain);
+
+        // Update y-axis with meaningful ticks
+        updateYAxis();
+
+        // Update the lines and circles based on the new yScale
+        updateLinesAndCircles();
+    }
+    function zoomOutOnChart() {
+        // Calculate the new y-axis domain to zoom in by 50%
+        var newDomain = yScale.domain().map(value => value * 1.5);
+
+        // Update the y-axis scale domain
+        yScale.domain(newDomain);
+
+        // Update y-axis with meaningful ticks
+        updateYAxis();
+
+        // Update the lines and circles based on the new yScale
+        updateLinesAndCircles();
+    }
+    function panUpOnChart() {
+        // Get the current y-axis domain
+        var currentDomain = yScale.domain();
+
+        // Calculate the new domain by shifting it upwards by a certain percentage
+        var deltaY = (currentDomain[1] - currentDomain[0]) * 0.1; // Adjust the percentage as needed
+        var newDomain = [currentDomain[0] + deltaY, currentDomain[1] + deltaY];
+
+        // Update the y-axis scale domain
+        yScale.domain(newDomain);
+
+        // Update y-axis with meaningful ticks
+        updateYAxis();
+
+        // Update the lines and circles based on the new yScale
+        updateLinesAndCircles();
+    }
+
+    function panDownOnChart() {
+        // Get the current y-axis domain
+        var currentDomain = yScale.domain();
+
+        // Calculate the new domain by shifting it downwards by a certain percentage
+        var deltaY = (currentDomain[1] - currentDomain[0]) * 0.1; // Adjust the percentage as needed
+        var newDomain = [currentDomain[0] - deltaY, currentDomain[1] - deltaY];
+
+        // Update the y-axis scale domain
+        yScale.domain(newDomain);
+
+        // Update y-axis with meaningful ticks
+        updateYAxis();
+
+        // Update the lines and circles based on the new yScale
+        updateLinesAndCircles();
+    }
+    // // Handle touch events
+    // svg.on("touchstart", yBrushed)
+    //     .on("touchmove", yBrushed)
+    //     .on("touchend", yBrushed);
+
+
+
+
+    function updateLinesAndCircles() {
+
+        // Update lines
+        svg.selectAll(".line")
+            .attr("d", function (d) { // Generate path 'd' attribute based on coordinates
+                return d3.line()
+                    .x(function (d) { return xScale(d.x); }) // Access x coordinate
+                    .y(function (d) { return yScale(d.y); }) // Access y coordinate
+                    .curve(d3.curveLinear) // Use linear curve
+                    (d.values); // Pass coordinates array
+            })
+        // Update circles
+        svg.selectAll(".athlete-circle")
+            .attr("cy", function (d) {
+                return yScale(d.coordinate.y);
+            })
+            .attr("cx", function (d) {
+                return xScale(d.coordinate.x);
+            });
+
+        // Update labels
+        svg.selectAll(".line-name")
+            .attr("x", width - 100)
+            .attr("y", d => yScale(d.values[d.values.length - 1].y))
+    }
+
+    // Function to update the y-axis based on the current yScale
     function updateYAxis() {
-        // Update y-axis dynamically
+
         // Calculate the range of the yScale
         const yRange = yScale.domain();
 
@@ -135,8 +299,38 @@ function drawChart(athletesArray, max_time_lag, spiderChartArray, colorPalette) 
 
     }
 
+
+    updateChart(10 * 360);
+    updateYAxis();
+
     function updateChart(max_time_lag) {
-        // Update chart based on max_time_lag
+
+        function estimateColumnWidth() {
+            // Initialize variable to store the longest name
+            var longestName = "Schummelfelder 🇬🇧";
+
+            // Get the computed style of an element with class 'label'
+            var labelElement = document.querySelector('.label');
+            var computedStyle = window.getComputedStyle(labelElement);
+
+            // Extract the font size from the computed style
+            var fontSize = computedStyle.getPropertyValue('font-size');
+
+            // Create a temporary span element to measure the width of the name
+            var span = document.createElement('span');
+            span.textContent = longestName;
+            span.style.fontSize = fontSize;//        s'2.0vw'; 
+            console.log("fontsize", fontSize, span.style.fontSize);
+            span.style.visibility = 'hidden';
+            document.body.appendChild(span);
+            // Get the width of the span element
+            var width = span.offsetWidth;
+            console.log("width", width);
+            // Remove the temporary span element
+            document.body.removeChild(span);
+            return width;
+        }
+
         function addListItem(listItem, index) {
             // Append the clickable rectangle
             var innerRect = listItem.append('svg')
@@ -326,6 +520,8 @@ function drawChart(athletesArray, max_time_lag, spiderChartArray, colorPalette) 
                 svg.select(".line-text").remove();
 
 
+
+
                 // Check if the athlete is selected
                 var isSelected = athleteIndexArray.includes(athleteIndex);
                 if (!isSelected) {
@@ -408,188 +604,42 @@ function drawChart(athletesArray, max_time_lag, spiderChartArray, colorPalette) 
         drawVerticalGridlines(svg, 42);
         drawVerticalGridlines(svg, 44);
 
+        // Function to draw vertical gridlines
+        function drawVerticalGridlines(selection, x) {
+            selection
+                .attr("class", "gridline")
+                .append("line")
+                .attr('x1', xScale(x))
+                .attr('y1', -10)
+                .attr('x2', xScale(x))
+                .attr('y2', yScale(-height - 250))
+                .style('stroke', 'gray')
+                .style('opacity', 0.5)
+                .style("stroke-dasharray", ("3, 3"))
+                .style("stroke-width", 0.5);
+        }
+
+
+        //function to annotate chrt 
+        function annotateChart(selection, x, y, text) {
+            selection
+                .append('text')
+                .attr("class", "label")
+                .attr('x', xScale(x))
+                .attr('y', y)
+                .text(text);
+        }
+
         // annotate with swim, t1, bike, t2, run
         annotateChart(svg, 4, -10, 'Swim');
         annotateChart(svg, 10.5, -10, 'T1');
         annotateChart(svg, 24, -10, 'Bike');
         annotateChart(svg, 42.5, -10, 'T2');
         annotateChart(svg, 52, -10, 'Run');
-    }
-    function formatYAxis(d) {
-        if (d < -90) {
-            const mins = -Math.floor(d / 60);
-            const secs = -d % 60;
-            return `${mins}:${secs < 10 ? '0' + secs : secs}`;
-        } else {
-            return -d;
-        }
-    }
-    // Function to draw vertical gridlines
-    function drawVerticalGridlines(selection, x) {
-        selection
-            .attr("class", "gridline")
-            .append("line")
-            .attr('x1', xScale(x))
-            .attr('y1', -10)
-            .attr('x2', xScale(x))
-            .attr('y2', yScale(-height - 250))
-            .style('stroke', 'gray')
-            .style('opacity', 0.5)
-            .style("stroke-dasharray", ("3, 3"))
-            .style("stroke-width", 0.5);
-    }
 
-    //function to annotate chrt 
-    function annotateChart(selection, x, y, text) {
-        selection
-            .append('text')
-            .attr("class", "label")
-            .attr('x', xScale(x))
-            .attr('y', y)
-            .text(text);
     }
-    initZoom();
-    updateChart(10*60);
-    updateYAxis();
-
 }
 
-const yScale = d3.scaleLinear()
-.domain([-max_time_lag, 0])
-.range([height, 0]);
-
-    let zoom = d3.zoom()
-        .scaleExtent([0.25, 10])
-        .on('zoom', handleZoom);
-    
-
-    
-    function initZoom() {
-       // d3.select("#development_chart")
-        d3.select('svg')
-            .call(zoom);
-    }
-    
-    
-    function handleZoom(e) {
-        d3.select('svg g')
-            .attr('transform', e.transform);
-            // const newYScale = e.transform.rescaleY(yScale); // Assuming yScale is your y-axis scale
-            // d3.select('svg g')
-            //     .attr('transform', `translate(0, ${e.transform.y}) scale(1, ${newYScale})`);
-        
-    }
-    
-    function zoomIn() {
-        d3.select('svg')
-            .transition()
-            .call(zoom.scaleBy, 2);
-    }
-    
-    function zoomOut() {
-        d3.select('svg')
-            .transition()
-            .call(zoom.scaleBy, 0.5);
-    }
-    
-    function resetZoom() {
-        d3.select('svg')
-            .transition()
-            .call(zoom.scaleTo, 1);
-    }
-    
-    function center() {
-        d3.select('svg')
-            .transition()
-            .call(zoom.translateTo, 0.5 * width, 0.5 * height);
-    }
-    
-    function panLeft() {
-        d3.select('svg')
-            .transition()
-            .call(zoom.translateBy, -50, 0);
-    }
-    
-    function panRight() {
-        d3.select('svg')
-            .transition()
-            .call(zoom.translateBy, 50, 0);
-    }
-    
-    // function updateData() {
-    //     data = [];
-    //     for(let i=0; i<numPoints; i++) {
-    //         data.push({
-    //             id: i,
-    //             x: Math.random() * width,
-    //             y: Math.random() * height
-    //         });
-    //     }
-    // }
-
-    // function update() {
-    //     d3.select('svg g')
-    //         .selectAll('circle')
-    //         .data(data)
-    //         .join('circle')
-    //         .attr('cx', function(d) { return d.x; })
-    //         .attr('cy', function(d) { return d.y; })
-    //         .attr('r', 3);
-    // }
-    
-
-    // updateData();
-    // update();
-
-        /*
-        // Add zoom behavior
-        const zoom = d3.zoom()
-            .scaleExtent([1, 10]) // Limit zoom scale
-            .on('zoom', zoomed);
-
-        // Apply zoom behavior to SVG
-        athleteGroups.call(zoom);
-
-    
-
-    function zoomed(event) {
-        const { transform } = event;
-        athleteGroups.attr('transform', transform);
-    }
-    
-    // Function to handle mouse wheel event for zooming
-    function handleMouseWheel(svg) {
-        console.log("handle mouse wheel");
-        svg.on('wheel', (event) => {
-            console.log("handle mouse wheel2");
-            // Check if the mouse event occurs inside the SVG area
-            if (!svg.node().contains(event.target)) return;
-            console.log("handle mouse wheel3")
-            // Prevent default behavior
-            event.preventDefault();
-    
-            // Get current transformation
-            const { transform } = d3.zoomTransform(svg.node());
-    
-            // Calculate scale based on wheel delta
-            const scale = 1 + event.deltaY * 0.01;
-    
-            // Apply scale transformation
-            const newTransform = transform.scale(scale);
-    
-            // Call zoom behavior with new transformation
-            svg.call(zoom.transform, newTransform);
-        });
-    }
-    
-    // Call function to handle mouse wheel event
-    handleMouseWheel(svg);
-    handleMouseWheel(athleteGroups);
-}
-*/
-
-
-    
 
 function getCountryFlagEmoji(countryCode) {
     const flagMappings = {
@@ -640,10 +690,4 @@ function getCountryFlagEmoji(countryCode) {
     }
     return flagMappings[countryCode] || countryCode;
 }
-function toggleBrushing() {
-    // Toggle brushing functionality
-}
 
-function displayTooltip(element, text) {
-    // Display tooltip for element
-}

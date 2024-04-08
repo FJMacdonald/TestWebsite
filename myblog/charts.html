@@ -31,19 +31,19 @@
     <div id="rank_chart" style="width: 100%;"></div>
     <!-- Reset button -->
     <div id="devchart_title"></div>
-    <button id="resetButton" class="button" style="display: none;">Reset</button>
+    <!-- <button id="resetButton" class="button" style="display: none;">Reset</button> -->
     <!-- Reset button -->
-    <button id="zoomButton" class="button" style="display: none;">Zoom</button>
+    <!-- <button id="zoomButton" class="button" style="display: none;">Zoom</button> -->
     <!-- Issue button -->
     <button id="issueButton" class="button" style="display: none;" onclick="showPopup()">Data Problems</button>
 
     <div id="development_chart"></div>
-    <button onclick="zoomIn()">Zoom in</button>
-    <button onclick="zoomOut()">Zoom out</button>
-    <button onclick="resetZoom()">Reset zoom</button>
-    <button onclick="panLeft()">Pan left</button>
-    <button onclick="panRight()">Pan right</button>
-    <button onclick="center()">Center</button>
+    <button id="zoomInButton">Zoom in</button>
+    <button id="zoomOutButton">Zoom out</button>
+    <button id="resetButton">Reset zoom</button>
+    <button id="panUpButton">Pan up</button>
+    <button id="panDownButton">Pan down</button>
+    <!-- <button id="centerButton">Center</button> -->
     <br>
     <div id="legend-container">
         <ul id="legend-pages">
@@ -330,7 +330,7 @@ const errorResult = 99999;
             });
 
         });
-      //  drawRankChart(rankArray, colorPalette);
+        drawRankChart(rankArray, colorPalette);
     }
 
         //draw development chart
