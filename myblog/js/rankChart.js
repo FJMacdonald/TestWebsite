@@ -3,15 +3,10 @@ function drawRankChart(athletesData, colorPalette) {
     // Define chart dimensions
     const margin = { top: 20, right: 30, bottom: 20, left: 10 };
     const width = window.innerWidth - margin.left - margin.right;
-    const height = 17 * athletesData.length;
-
-    //get the section lengths 
-    const sectionLength = width / 8;
-
-
+    const height = 14 * athletesData.length;
 
     d3.select("#rank_chart").selectAll('*').remove();
-    var svg = d3.select("#rank_chart")
+    var svg_rank = d3.select("#rank_chart")
         .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
@@ -19,7 +14,7 @@ function drawRankChart(athletesData, colorPalette) {
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
     // Create a rectangle for the frame
-    var frame = svg.append("rect")
+    var frame = svg_rank.append("rect")
         .attr("x", 0)
         .attr("y", 0)
         .attr("width", width)
@@ -49,7 +44,7 @@ function drawRankChart(athletesData, colorPalette) {
         xScale(5.65),
     ];
     // Draw lines connecting swim, bike, run, and finish positions for each athlete
-    const athleteLines = svg.selectAll('.athlete-line')
+    const athleteLines = svg_rank.selectAll('.athlete-line')
         .data(athletesData)
         .enter()
         .append('path')
@@ -82,25 +77,25 @@ function drawRankChart(athletesData, colorPalette) {
         d3.select(this).attr('stroke-width', 5);
         d3.select(this).attr('opacity', 1);
         // Bold the associated athlete name label
-        svg.select(`#athlete-label-${d.athleteName.replace(/\s/g, '')}`).style('font-weight', 'bold');
+        svg_rank.select(`#athlete-label-${d.athleteName.replace(/\s/g, '')}`).style('font-weight', 'bold');
     })
         .on('mouseout', function (event, d) {
             d3.select(this).attr('stroke-width', 2);
             d3.select(this).attr('opacity', 0.7);
             // Revert the associated athlete name label to normal
-            svg.select(`#athlete-label-${d.athleteName.replace(/\s/g, '')}`).style('font-weight', 'normal');
+            svg_rank.select(`#athlete-label-${d.athleteName.replace(/\s/g, '')}`).style('font-weight', 'normal');
         })
         .on('touchstart', function (event, d) {
             d3.select(this).attr('stroke-width', 5);
             d3.select(this).attr('opacity', 1);
             // Bold the associated athlete name label
-            svg.select(`#athlete-label-${d.athleteName.replace(/\s/g, '')}`).style('font-weight', 'bold');
+            svg_rank.select(`#athlete-label-${d.athleteName.replace(/\s/g, '')}`).style('font-weight', 'bold');
         })
         .on('touchend', function (event, d) {
             d3.select(this).attr('stroke-width', 2);
             d3.select(this).attr('opacity', 0.7);
             // Revert the associated athlete name label to normal
-            svg.select(`#athlete-label-${d.athleteName.replace(/\s/g, '')}`).style('font-weight', 'normal');
+            svg_rank.select(`#athlete-label-${d.athleteName.replace(/\s/g, '')}`).style('font-weight', 'normal');
         });
 
 
@@ -109,7 +104,7 @@ function drawRankChart(athletesData, colorPalette) {
     const sectionLabels = ['Swim', 'T1', 'Bike', 'T2', 'Run', 'Finish'];
 
     // Add section labels
-    svg.selectAll('.section-label')
+    svg_rank.selectAll('.section-label')
         .data(sectionLabels)
         .enter()
         .append('text')
@@ -123,7 +118,7 @@ function drawRankChart(athletesData, colorPalette) {
         .attr('fill', 'black');
 
     // Add swim ranks on the left
-    svg.selectAll('.swim-rank-label')
+    svg_rank.selectAll('.swim-rank-label')
         .data(athletesData)
         .enter()
         .append('text')
@@ -136,7 +131,7 @@ function drawRankChart(athletesData, colorPalette) {
     // .style('font-size', '12px');
 
     // Add athlete names at the finish position
-    svg.selectAll('.athlete-label')
+    svg_rank.selectAll('.athlete-label')
         .data(athletesData)
         .enter()
         .append('text')
@@ -151,7 +146,7 @@ function drawRankChart(athletesData, colorPalette) {
 
 
 
-    svg.selectAll('.section-line')
+    svg_rank.selectAll('.section-line')
         .data(sectionEnds)
         .enter()
         .append('line')
@@ -171,7 +166,7 @@ function drawRankChart(athletesData, colorPalette) {
     }
 
     // Add horizontal gridlines for positions
-    svg.selectAll('.position-line')
+    svg_rank.selectAll('.position-line')
         .data(positionMidpoints)
         .enter()
         .append('line')
