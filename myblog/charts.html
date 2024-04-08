@@ -38,6 +38,13 @@
     <button id="issueButton" class="button" style="display: none;" onclick="showPopup()">Data Problems</button>
 
     <div id="development_chart"></div>
+    <button onclick="zoomIn()">Zoom in</button>
+    <button onclick="zoomOut()">Zoom out</button>
+    <button onclick="resetZoom()">Reset zoom</button>
+    <button onclick="panLeft()">Pan left</button>
+    <button onclick="panRight()">Pan right</button>
+    <button onclick="center()">Center</button>
+    <br>
     <div id="legend-container">
         <ul id="legend-pages">
             <!-- Legend pages will be dynamically populated here -->
@@ -52,11 +59,12 @@
     <script src="https://d3js.org/d3-interpolate.v1.min.js"> </script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"> </script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="/js/developmentChart.js"></script>
+    <!-- <script src="/js/developmentChart.js"></script> -->
+    <script src="/js/dev_wzoom.js"></script>
     <script src="/js/spiderChart.js"></script>
     <script src="/js/rankChart.js"></script>
     <script>
-
+const errorResult = 99999;
         function returnToMain() {
             window.location.href = "default.html";
         }
@@ -322,7 +330,7 @@
             });
 
         });
-        drawRankChart(rankArray, colorPalette);
+      //  drawRankChart(rankArray, colorPalette);
     }
 
         //draw development chart
