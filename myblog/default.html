@@ -190,8 +190,7 @@ By following these steps, you can create a free website that allows users to upl
             fileButtonsDiv.innerHTML = ""; // Clear previous buttons
             const backButton = document.createElement("button");
             backButton.textContent = '\u25C0';
-            // backButton.textContent = "⬅";
-            // backButton.style.fontSize = "32px";
+
             backButton.addEventListener("click", () => {
                 currentYear = null;
                 createYearButtons();
@@ -213,7 +212,7 @@ By following these steps, you can create a free website that allows users to upl
         function createFilenameButtons(filenames, race) {
             fileButtonsDiv.innerHTML = ""; // Clear previous buttons
             const backButton = document.createElement("button");
-            backButton.textContent = "Back";
+            backButton.textContent = '\u25C0';
             backButton.addEventListener("click", () => {
                 currentRace = null;
                 createRaceButtons(years[currentYear]);
