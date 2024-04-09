@@ -646,6 +646,7 @@ function getCountryFlagEmoji(countryCode) {
         'ZAF': '🇿🇦', 'USA': '🇺🇸', 'GER': '🇩🇪', 'ESP': '🇪🇸', 'NED': '🇳🇱',
         'DEN': '🇩🇰', 'GBR': '🇬🇧', 'RSA': '🇿🇦', 'SUI': '🇨🇭', 'CHI': '🇨🇱',
         'BER': '🇧🇲', 'ZIM': '🇿🇼', 'VEN': '🇻🇪', 'CRC': '🇨🇷', 'GUA': '🇬🇹',
+        'PHI': '🇵🇭', 'ARU': '🇦🇼', 'BAH': '🇧🇸', 'PUR': '🇵🇷',
     }
     return flagMappings[countryCode] || countryCode;
 }
