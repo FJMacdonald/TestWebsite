@@ -16,7 +16,7 @@ const circleRadiusHover = 4;
 function drawChart(athletesArray, max_time_lag, spiderChartArray, colorPalette) {
 
 //set the dimensions and margins of the graph
-const margin = { top: 20, right: 5, bottom: 5, left: 5 };
+const margin = { top: 20, right: 25, bottom: 5, left: 5 };
 const padding = { top: 20, right: 30, bottom: 10, left: 50 };
 const width = window.innerWidth - margin.left - margin.right,
       height = 0.5 * clientHeight;
