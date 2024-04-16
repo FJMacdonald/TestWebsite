@@ -52,7 +52,9 @@ By following these steps, you can create a free website that allows users to upl
         </div>
     </div>
 
-
+    <input type="file" id="fileInput" accept=".csv">
+    <input type="text" id="filenameInput" placeholder="Enter new filename">
+    <button onclick="processFile()">Process File</button>
 
 
     <div>
@@ -65,9 +67,22 @@ By following these steps, you can create a free website that allows users to upl
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"> </script>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="/js/developmentChart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="/js/resultsConverter.js"></script>
     <script>
 
     document.addEventListener('DOMContentLoaded', function() {
+
+        //generateCSVfile();
+
+
+        // converting saved myRaceResult data to world triathlon format
+        // const csvData = `Place,Bib,firstname,lastname,Swim,T1,Bike,T2,Run,Finish
+        // 1,355,Josie,Nunziata,05:20,01:32,18:28,00:30,10:11,36:03
+        // 2,324,Louise,Delgado,06:20,01:32,18:04,00:34,09:47,36:18`;
+        // const standardFormatCsv = convertToStandardFormat(csvData);
+        // console.log(standardFormatCsv);
+
 
         var titlename = "";
 
@@ -99,7 +114,12 @@ By following these steps, you can create a free website that allows users to upl
             //14th April
             "Results for Elite Women - 2024 Americas Triathlon Cup Salinas.csv",
             "Results for Elite Men - 2024 Americas Triathlon Cup Salinas.csv",
+            
             "Results for NCAA - 2024 Texas Draft Legal Festival.csv",
+            "Results for Youth Elite Women - 2024 Texas Draft Legal Festival.csv",
+            "Results for Youth Elite Men - 2024 Texas Draft Legal Festival.csv",
+            "Results for Junior Elite Women - 2024 Texas Draft Legal Festival.csv",
+            "Results for Junior Elite Men - 2024 Texas Draft Legal Festival.csv",
             //24 March
             "Results for Elite Women - 2024 World Triathlon Cup Hong Kong.csv",
             "Results for Elite Men - 2024 World Triathlon Cup Hong Kong.csv",
@@ -361,7 +381,7 @@ By following these steps, you can create a free website that allows users to upl
                     results.push(obj);
                 }
             }
-
+            console.log('results', results);
             // Convert time strings to seconds and store each stage of the race
             var leadSwim = 0;
             var leadT1 = 0;
